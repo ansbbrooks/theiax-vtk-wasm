@@ -79,9 +79,7 @@ export default defineConfig({
           items: [
             { text: "Getting started", link: "/guide/cpp/" },
             { text: "Building VTK", link: "/guide/cpp/setup" },
-            { text: "Embind Simple", link: "/guide/cpp/app-1" },
-            { text: "Embind Advanced", link: "/guide/cpp/app-2" },
-            { text: "Plain JavaScript", link: "/guide/cpp/app-3" },
+            { text: "Embind", link: "/guide/cpp/embind" },
           ],
         },
         {
