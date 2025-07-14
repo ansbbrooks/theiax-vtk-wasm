@@ -22,7 +22,7 @@ The [9.5.0 release](https://www.kitware.com/vtk-9-5-0/) includes many improvment
 You can install the equivalent python wheel with the command
 
 ```sh
-pip install "vtk==9.5.0" --extra-index-url https://wheels.vtk.org
+pip install "vtk==9.5.0"
 ```
 
 The WASM bundle is available here:
