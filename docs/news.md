@@ -1,3 +1,31 @@
+## 9.5.20250712 is now available!
+
+__July 12, 2025__
+
+You can install the equivalent python wheel with the command
+
+```sh
+pip install "vtk==9.5.20250712.dev0" --extra-index-url https://wheels.vtk.org
+```
+
+The WASM bundle is available here:
+
+1. [vtk-9.5.20250712-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5444/download)
+2. [vtk-9.5.20250712-wasm64-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5445/download)
+
+
+## Fix interactor event loop error in wasm64 bundle
+
+__July 10, 2025__
+
+[vtk/vtk!12278](https://gitlab.kitware.com/vtk/vtk/-/merge_requests/12278) fixed a runtime error when the interactor event loop was started in wasm64 bundle.
+
+## Invalidate shader when clipping planes are updated
+
+__July 9, 2025__
+
+[vtk/vtk!12271](https://gitlab.kitware.com/vtk/vtk/-/merge_requests/12271) fixed a bug where the mapper clip planes were not applied when developers used Add/RemoveClippingPlane API after initial render.
+
 ## 9.5.20250628 is now available!
 
 __June 21, 2025__
