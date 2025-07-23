@@ -9,7 +9,6 @@ pip install "vtk==9.5.20250719.dev0" --extra-index-url https://wheels.vtk.org
 ```
 
 The WASM bundle is available here:
-
 1. [vtk-9.5.20250719-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5502/download)
 2. [vtk-9.5.20250719-wasm64-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5503/download)
 
@@ -24,10 +23,8 @@ pip install "vtk==9.5.20250712.dev0" --extra-index-url https://wheels.vtk.org
 ```
 
 The WASM bundle is available here:
-
 1. [vtk-9.5.20250712-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5444/download)
 2. [vtk-9.5.20250712-wasm64-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5445/download)
-
 
 ## Fix interactor event loop error in wasm64 bundle
 
@@ -52,7 +49,6 @@ pip install "vtk==9.5.20250628.dev0" --extra-index-url https://wheels.vtk.org
 ```
 
 The WASM bundle is available here:
-
 1. [vtk-9.5.20250628-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5389/download)
 2. [vtk-9.5.20250628-wasm64-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5388/download)
 
@@ -68,9 +64,7 @@ You can install the equivalent python wheel with the command
 pip install "vtk==9.5.0"
 ```
 
-The WASM bundle is available here:
-
-[vtk-9.5.0-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5327/download)
+The WASM bundle is available here: [vtk-9.5.0-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5327/download)
 
 ## Fix serialization for RenderingAnnotation module
 
@@ -108,7 +102,6 @@ pip install "vtk==9.5.20250621.dev0" --extra-index-url https://wheels.vtk.org
 ```
 
 The WASM bundle is available here:
-
 1. [vtk-9.5.20250621-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5329/download)
 2. [vtk-9.5.20250621-wasm64-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5328/download)
 
@@ -122,7 +115,6 @@ pip install "vtk==9.5.20250614.dev0" --extra-index-url https://wheels.vtk.org
 ```
 
 The WASM bundle is available here:
-
 1. [vtk-9.5.20250614-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5323/download)
 2. [vtk-9.5.20250614-wasm64-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5322/download)
 
@@ -136,7 +128,6 @@ pip install "vtk==9.5.20250607.dev0" --extra-index-url https://wheels.vtk.org
 ```
 
 The WASM bundle is available here:
-
 1. [vtk-9.5.20250607-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5261/download)
 2. [vtk-9.5.20250607-wasm64-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5262/download)
 
@@ -175,7 +166,6 @@ pip install "vtk==9.5.20250531.dev0" --extra-index-url https://wheels.vtk.org
 ```
 
 The WASM bundle is available here:
-
 1. [vtk-9.5.20250531-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5198/download)
 2. [vtk-9.5.20250531-wasm64-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5197/download)
 
@@ -238,9 +228,7 @@ You can install the equivalent python wheel with the command
 pip install "vtk==-9.5.20250513-wa" --extra-index-url https://wheels.vtk.org
 ```
 
-The WASM bundle is available here:
-
-[vtk-9.5.20250513-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5101/download)
+The WASM bundle is available here: [vtk-9.5.20250513-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5101/download)
 
 ## 9.5.20250510 is now available!
 __May 10, 2025__
@@ -251,9 +239,7 @@ You can install the equivalent python wheel with the command
 pip install "vtk==-9.5.20250510-wa" --extra-index-url https://wheels.vtk.org
 ```
 
-The WASM bundle is available here:
-
-[vtk-9.5.20250510-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5067/download)
+The WASM bundle is available here: [vtk-9.5.20250510-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/5067/download)
 
 ## Add serialization for pickers
 
