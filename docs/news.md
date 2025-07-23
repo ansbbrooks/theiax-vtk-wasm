@@ -28,7 +28,7 @@ __July 9, 2025__
 
 ## 9.5.20250628 is now available!
 
-__June 21, 2025__
+__June 28, 2025__
 
 You can install the equivalent python wheel with the command
 
