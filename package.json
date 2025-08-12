@@ -41,12 +41,14 @@
     "dist/**/*"
   ],
   "exports": {
-    "./remote": "./dist/esm/remote.mjs",
-    "./vtk": "./dist/esm/vtk.mjs",
-    "./viewer": "./dist/esm/viewer.mjs",
-    "./viewer-umd.js": "./dist/umd/viewer.umd.js",
-    "./vtk-umd.js": "./dist/umd/vtk.umd.js",
-    "./viewer.css": "./dist/umd/viewer.css"
+    "./remote": "./esm/remote.mjs",
+    "./vtk": "./esm/vtk.mjs",
+    "./viewer": "./esm/viewer.mjs",
+    "./viewer-umd.js": "./umd/viewer.umd.js",
+    "./vtk-umd.js": "./umd/vtk.umd.js",
+    "./viewer.css": "./umd/viewer.css",
+    "./umd/*": "./umd/*",
+    "./esm/*": "./esm/*"
   },
   "config": {
     "commitizen": {
