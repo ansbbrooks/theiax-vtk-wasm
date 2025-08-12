@@ -37,9 +37,9 @@ Refer to the `package.json` for the full list of scripts and configuration detai
 ### ESM imports
 
 ```js
-import { RemoteSession } from "@kitware/vtk-wasm/remote.js"
-import { createVtkObjectProxy, createNamespace } from "@kitware/vtk-wasm/vtk.js"
-import { ExportViewer, createViewer } from "@kitware/vtk-wasm/viewer.js"
+import { RemoteSession } from "@kitware/vtk-wasm/remote"
+import { createVtkObjectProxy, createNamespace } from "@kitware/vtk-wasm/vtk"
+import { ExportViewer, createViewer } from "@kitware/vtk-wasm/viewer"
 ```
 
 ### UMD imports
