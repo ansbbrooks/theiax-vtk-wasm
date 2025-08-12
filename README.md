@@ -31,3 +31,20 @@ The following scripts are available in `package.json`:
 - **UMD Bundle:** For StandaloneSession, exposed as the `VTK` namespace for use in browser environments.
 
 Refer to the `package.json` for the full list of scripts and configuration details.
+
+### ESM imports
+
+```js
+import { RemoteSession } from "@kitware/vtk-wasm/remote.js"
+import { createVtkObjectProxy, createNamespace } from "@kitware/vtk-wasm/vtk.js"
+import { ExportViewer, createViewer } from "@kitware/vtk-wasm/viewer.js"
+```
+
+### UMD imports
+
+```js
+import "@kitware/vtk-wasm/viewer.css";
+import "@kitware/vtk-wasm/viewer-umd.js";
+
+import "@kitware/vtk-wasm/vtk-umd.js";
+```
