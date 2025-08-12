@@ -1,63 +1,62 @@
 <html>
-    <head>
-        <script src="https://unpkg.com/@kitware/vtk-wasm/dist/umd/viewer.umd.js"></script>
-    </head>
-    <body style="margin: 0">
-        <div id="viewer"></div>
-        <script>
-            vtkWASMViewer
-                .createViewer(
-                    "#viewer",
-                    "/vtk-wasm/data/porsche.wazex",
-                    "/vtk-wasm/wasm32/latest",
-                    {
-                        rendering: "webgl",
-                    },
-                )
-                .then((viewer) => {
-                    // ------------------------------------------------------------
-                    // enable picking in pure JS
-                    // ------------------------------------------------------------
-                    const renderWindow = viewer.remoting.getVtkObject(1);
-                    const renderer = viewer.remoting.getVtkObject(3);
-                    const property = viewer.remoting.getVtkObject(515);
-                    const picker = viewer.remoting.getVtkObject(513);
-                    const interactor = viewer.remoting.getVtkObject(509);
-                    // ------------------------------------------------------------
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@kitware/vtk-wasm/viewer.css"
+    />
+    <script src="https://unpkg.com/@kitware/vtk-wasm/viewer-umd.js"></script>
+  </head>
+  <body style="margin: 0">
+    <div id="viewer"></div>
+    <script>
+      vtkWASMViewer
+        .createViewer(
+          "#viewer",
+          "/vtk-wasm/data/porsche.wazex",
+          "/vtk-wasm/wasm32/latest",
+          {
+            rendering: "webgl",
+          },
+        )
+        .then((viewer) => {
+          // ------------------------------------------------------------
+          // enable picking in pure JS
+          // ------------------------------------------------------------
+          const renderWindow = viewer.remoting.getVtkObject(1);
+          const renderer = viewer.remoting.getVtkObject(3);
+          const property = viewer.remoting.getVtkObject(515);
+          const picker = viewer.remoting.getVtkObject(513);
+          const interactor = viewer.remoting.getVtkObject(509);
+          // ------------------------------------------------------------
 
-                    let pickingPending = false;
-                    let lastActor = null;
+          let pickingPending = false;
+          let lastActor = null;
 
-                    async function pick() {
-                        if (pickingPending) {
-                            return;
-                        }
-                        try {
-                            pickingPending = true;
-                            const pos = interactor.state.eventPosition;
-                            const found = await picker.pick(
-                                [...pos, 0],
-                                renderer,
-                            );
-                            if (found) {
-                                if (lastActor) {
-                                    (await lastActor.getProperty()).deepCopy(
-                                        property,
-                                    );
-                                }
-                                lastActor = await picker.getActor();
-                                const actorProp = await lastActor.getProperty();
-                                await property.deepCopy(actorProp);
-                                await actorProp.setColor(1, 0, 1);
-                                await actorProp.edgeVisibilityOn();
-                            }
-                            await renderWindow.render();
-                        } finally {
-                            pickingPending = false;
-                        }
-                    }
-                    interactor.observe("MouseMoveEvent", pick);
-                });
-        </script>
-    </body>
+          async function pick() {
+            if (pickingPending) {
+              return;
+            }
+            try {
+              pickingPending = true;
+              const pos = interactor.state.eventPosition;
+              const found = await picker.pick([...pos, 0], renderer);
+              if (found) {
+                if (lastActor) {
+                  (await lastActor.getProperty()).deepCopy(property);
+                }
+                lastActor = await picker.getActor();
+                const actorProp = await lastActor.getProperty();
+                await property.deepCopy(actorProp);
+                await actorProp.setColor(1, 0, 1);
+                await actorProp.edgeVisibilityOn();
+              }
+              await renderWindow.render();
+            } finally {
+              pickingPending = false;
+            }
+          }
+          interactor.observe("MouseMoveEvent", pick);
+        });
+    </script>
+  </body>
 </html>

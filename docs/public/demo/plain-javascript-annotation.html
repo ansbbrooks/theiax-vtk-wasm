@@ -1,18 +1,18 @@
 <html>
-    <head>
-        <script
-            src="https://unpkg.com/@kitware/vtk-wasm/dist/umd/vtk.umd.js"
-            id="vtk-wasm"
-            data-url="/vtk-wasm/wasm32/latest"
-        ></script>
-        <script src="example.js"></script>
-    </head>
-    <body>
-        <canvas id="vtk-wasm-window"></canvas>
-        <script>
-            vtkReady.then((vtk) => {
-                buildWASMScene(vtk); // Also available on window.vtk
-            });
-        </script>
-    </body>
+  <head>
+    <script
+      src="https://unpkg.com/@kitware/vtk-wasm/vtk-umd.js"
+      id="vtk-wasm"
+      data-url="/vtk-wasm/wasm32/latest"
+    ></script>
+    <script src="example.js"></script>
+  </head>
+  <body>
+    <canvas id="vtk-wasm-window"></canvas>
+    <script>
+      vtkReady.then((vtk) => {
+        buildWASMScene(vtk); // Also available on window.vtk
+      });
+    </script>
+  </body>
 </html>

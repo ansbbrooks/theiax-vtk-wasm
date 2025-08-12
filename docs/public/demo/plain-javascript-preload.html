@@ -1,16 +1,16 @@
 <html>
-    <head>
-        <script
-            src="/vtk-wasm/wasm32/latest/vtkWebAssembly.mjs"
-            type="module"
-        ></script>
-        <script src="https://unpkg.com/@kitware/vtk-wasm/dist/umd/vtk.umd.js"></script>
-        <script src="example.js"></script>
-    </head>
-    <body>
-        <canvas id="vtk-wasm-window"></canvas>
-        <script>
-            vtkWASM.createNamespace().then(buildWASMScene);
-        </script>
-    </body>
+  <head>
+    <script
+      src="/vtk-wasm/wasm32/latest/vtkWebAssembly.mjs"
+      type="module"
+    ></script>
+    <script src="https://unpkg.com/@kitware/vtk-wasm/vtk-umd.js"></script>
+    <script src="example.js"></script>
+  </head>
+  <body>
+    <canvas id="vtk-wasm-window"></canvas>
+    <script>
+      vtkWASM.createNamespace().then(buildWASMScene);
+    </script>
+  </body>
 </html>

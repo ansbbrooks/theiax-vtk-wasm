@@ -1,28 +1,32 @@
 <html>
-    <head>
-        <script src="https://unpkg.com/@kitware/vtk-wasm/dist/umd/viewer.umd.js"></script>
-    </head>
-    <body style="margin: 0">
-        <div id="viewer"></div>
-        <script>
-            vtkWASMViewer
-                .createViewer(
-                    "#viewer",
-                    "/vtk-wasm/data/star-fighter2.wazex",
-                    "/vtk-wasm/wasm32/latest",
-                    {
-                        rendering: "webgl",
-                    },
-                )
-                .then((viewer) => {
-                    const widget = viewer.remoting.getVtkObject(58);
-                    const plane = viewer.remoting.getVtkObject(25);
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@kitware/vtk-wasm/viewer.css"
+    />
+    <script src="https://unpkg.com/@kitware/vtk-wasm/viewer-umd.js"></script>
+  </head>
+  <body style="margin: 0">
+    <div id="viewer"></div>
+    <script>
+      vtkWASMViewer
+        .createViewer(
+          "#viewer",
+          "/vtk-wasm/data/star-fighter2.wazex",
+          "/vtk-wasm/wasm32/latest",
+          {
+            rendering: "webgl",
+          },
+        )
+        .then((viewer) => {
+          const widget = viewer.remoting.getVtkObject(58);
+          const plane = viewer.remoting.getVtkObject(25);
 
-                    widget.observe("InteractionEvent", () => {
-                        plane.origin = widget.widgetRepresentation.origin;
-                        plane.normal = widget.widgetRepresentation.normal;
-                    });
-                });
-        </script>
-    </body>
+          widget.observe("InteractionEvent", () => {
+            plane.origin = widget.widgetRepresentation.origin;
+            plane.normal = widget.widgetRepresentation.normal;
+          });
+        });
+    </script>
+  </body>
 </html>

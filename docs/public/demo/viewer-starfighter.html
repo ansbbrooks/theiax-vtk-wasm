@@ -1,18 +1,22 @@
 <html>
-    <head>
-        <script src="https://unpkg.com/@kitware/vtk-wasm/dist/umd/viewer.umd.js"></script>
-    </head>
-    <body style="margin: 0">
-        <div id="viewer"></div>
-        <script>
-            vtkWASMViewer.createViewer(
-                "#viewer",
-                "/vtk-wasm/data/star-fighter.wazex",
-                "/vtk-wasm/wasm32/latest",
-                {
-                    rendering: "webgl",
-                },
-            );
-        </script>
-    </body>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@kitware/vtk-wasm/viewer.css"
+    />
+    <script src="https://unpkg.com/@kitware/vtk-wasm/viewer-umd.js"></script>
+  </head>
+  <body style="margin: 0">
+    <div id="viewer"></div>
+    <script>
+      vtkWASMViewer.createViewer(
+        "#viewer",
+        "/vtk-wasm/data/star-fighter.wazex",
+        "/vtk-wasm/wasm32/latest",
+        {
+          rendering: "webgl",
+        },
+      );
+    </script>
+  </body>
 </html>
