@@ -34,6 +34,13 @@ In this example we tag the script to autoload WASM and create a global vtk names
 <<< ../../public/demo/example.js
 :::
 
+In this example we tag the script to autoload WASM directly from the VTK repository's package registry and create a global vtk namespace. You can customize the wasm architecture and version by changing the data-url.
+
+::: code-group
+<<< ../../public/demo/plain-javascript-annotation-wasm-registry.html
+<<< ../../public/demo/example.js
+:::
+
 ## Configuration options
 
 The method `createNamespace(url, config)` takes two arguments. The first one is used to specify the base directory where the wasm file from VTK will be find. When the module is loaded, the __url__ parameter could be skipped. For the __config__ it is aimed to tune how you would like your WASM environement to behave. The following sections cover the various options and what it means.

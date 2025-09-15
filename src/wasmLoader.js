@@ -1,5 +1,8 @@
+import untar from "js-untar";
+
 const LOADED_URLS = [];
 const PROMISES = {};
+let WASM_FILE_OBJECT = null;
 
 /**
  * Create a future that returns
@@ -33,18 +36,22 @@ function isSameConfig(a, b) {
 }
 
 export function generateWasmConfig(config) {
-  if (config?.rendering === "webgpu") {
-    console.log("WASM use WebGPU");
-    return {
-      preRun: [
-        function (module) {
-          module.ENV.VTK_GRAPHICS_BACKEND = "WEBGPU";
-        },
-      ],
-    };
+  return {
+    locateFile: (fileName) => {
+      if (WASM_FILE_OBJECT && fileName == WASM_FILE_OBJECT.name) {
+        return URL.createObjectURL(WASM_FILE_OBJECT);
+      }
+      return new URL(fileName, import.meta.url).href;
+    },
+    onRuntimeInitialized: (module) => {
+      if (WASM_FILE_OBJECT) {
+        URL.revokeObjectURL(WASM_FILE_OBJECT);
+      }
+    },
+    preRun: config?.rendering === "webgpu" ? [(module) => {
+      module.ENV.VTK_GRAPHICS_BACKEND = "WEBGPU";
+    }] : [],
   }
-  console.log("WASM use WebGL2");
-  return {};
 }
 
 /**
@@ -148,14 +155,34 @@ export class VtkWASMLoader {
         let jsModuleURL = null;
 
         // Try newest version first
-        url = `${wasmBaseURL}/${wasmBaseName}WebAssembly${this.config?.exec === "async" ? "Async" : ""}.mjs`;
-        const newModuleResponse = await fetch(url);
-        if (newModuleResponse.ok) {
-          // In docker we serve the index.html when file don't exist
-          const content = await newModuleResponse.text();
-          if (content[0] !== "<") {
-            // Not html content
-            jsModuleURL = url;
+        let newModuleResponse = null;
+        if (wasmBaseURL.startsWith("http") && wasmBaseURL.endsWith(".gz")) {
+          // Absolute URL pointing to a GZIP file.
+          newModuleResponse = await fetch(wasmBaseURL);
+          const ds = new DecompressionStream("gzip");
+          const decompressedStream = newModuleResponse.body.pipeThrough(ds);
+          const blob = await new Response(decompressedStream).blob();
+          const arrayBuffer = await blob.arrayBuffer();
+          const files = await untar(arrayBuffer);
+          files.forEach((file) => {
+            file.name = file.name.replace("./", "");
+            if (file.name === `${wasmBaseName}WebAssembly${this.config?.exec === "async" ? "Async" : ""}.mjs`) {
+              jsModuleURL = URL.createObjectURL(new File([file.buffer], file.name, { type: "text/javascript" }));
+            } else if (file.name === `${wasmBaseName}WebAssembly${this.config?.exec === "async" ? "Async" : ""}.wasm`) {
+              // Create a file URL for the wasm file so it can be loaded
+              WASM_FILE_OBJECT = new File([file.buffer], file.name, { type: "application/wasm" });
+            }
+          });
+        } else {
+          url = `${wasmBaseURL}/${wasmBaseName}WebAssembly${this.config?.exec === "async" ? "Async" : ""}.mjs`;
+          newModuleResponse = await fetch(url);
+          if (newModuleResponse.ok) {
+            // In docker we serve the index.html when file don't exist
+            const content = await newModuleResponse.text();
+            if (content[0] !== "<") {
+              // Not html content
+              jsModuleURL = url;
+            }
           }
         }
 
@@ -181,6 +208,10 @@ export class VtkWASMLoader {
         // Load JS
         console.log("WASM use", jsModuleURL);
         await loadScriptAsModule(jsModuleURL);
+        // Cleanup object URL corresponding to the JavaScript module.
+        if (jsModuleURL.startsWith("blob:")) {
+          URL.revokeObjectURL(jsModuleURL);
+        }
       }
 
       // Load WASM
