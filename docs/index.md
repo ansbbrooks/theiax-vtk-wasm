@@ -38,14 +38,14 @@ features:
       src: /logos/opensource.svg
       alt: Pure Python
       width: 28
-    details: ParaView Catalyst is an open source project licensed under BSD 3-Clause license that enables the broadest possible audience, including commercial organizations, to use the software royalty free.
+    details: VTK is an open source project licensed under BSD 3-Clause license that enables the broadest possible audience, including commercial organizations, to use the software royalty free.
     link: https://www.kitware.com/open-source/
   - title: Support and Services
     icon:
       src: /logos/k.svg
       alt: Kitware Inc.
       width: 20
-    details: Kitware can help you get started intergrating ParaView Catalyst into your simulation. Our team is here to help.  Please contact us
+    details: Kitware can help you get started intergrating VTK.wasm into your application. Our team is here to help.  Please contact us
     link: https://www.kitware.com/support
 #  - details: '<iframe src="./demo/viewer-basic.html" style="width: 100%; height: 100%; border: none"></iframe>'
 #  - details: '<iframe src="./demo/viewer-porsche.html" style="width: 100%; height: 100%; border: none"></iframe>'
