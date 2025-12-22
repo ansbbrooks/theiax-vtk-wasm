@@ -1,6 +1,6 @@
 import JSZip from "jszip";
 import { RemoteSession } from "./remote";
-import { createFuture } from "./wasmLoader";
+import { createFuture } from "./core/future";
 
 export class ExportViewer {
   constructor(containerSelector, remoting) {

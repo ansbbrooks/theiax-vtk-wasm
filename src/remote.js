@@ -1,7 +1,7 @@
 import "./style.css";
 
 import { VtkWASMLoader } from "./wasmLoader";
-import { createVtkObjectProxy } from "./standalone";
+import { createVtkObjectProxy } from "./core/proxy";
 
 // url => loader instance
 const WASM_LOADERS = {};

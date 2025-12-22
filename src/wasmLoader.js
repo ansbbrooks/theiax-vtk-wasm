@@ -1,66 +1,11 @@
-import untar from "js-untar";
-
-const LOADED_URLS = [];
-const PROMISES = {};
-
-/**
- * Create a future that returns
- * @returns { promise, resolve, reject }
- */
-export function createFuture() {
-  let resolve, reject;
-  const promise = new Promise((res, rej) => {
-    resolve = res;
-    reject = rej;
-  });
-  return { promise, resolve, reject };
-}
-
-function convertToObj(state) {
-  if (state?.Id) {
-    return state;
-  }
-  return JSON.parse(state);
-}
-
-function convertToStr(state) {
-  if (state?.Id) {
-    return JSON.stringify(state);
-  }
-  return state;
-}
-
-function isSameConfig(a, b) {
-  return a.rendering === b.rendering && a.exec === b.exec;
-}
-
-/**
- * Add script tag with provided URL with type="module"
- *
- * @param {string} url
- * @return {Promise<void>} to know when the script is ready
- */
-export function loadScriptAsModule(url) {
-  if (PROMISES[url]) {
-    return PROMISES[url];
-  }
-
-  PROMISES[url] = new Promise(function (resolve, reject) {
-    if (LOADED_URLS.indexOf(url) === -1) {
-      LOADED_URLS.push(url);
-      var newScriptTag = document.createElement("script");
-      newScriptTag.type = "module";
-      newScriptTag.src = url;
-      newScriptTag.onload = resolve;
-      newScriptTag.onerror = reject;
-      document.body.appendChild(newScriptTag);
-    } else {
-      resolve(false);
-    }
-  });
-
-  return PROMISES[url];
-}
+import { extractFilesFromGzipBundle, fetchGzipBundle, isGzipBundle } from "./core/gzipBundle";
+import { createEmscriptenConfig, normalizeConfig, validateConfig } from "./core/configManager";
+import { DEFAULT_CONFIG, MIME_TYPES } from "./core/constants";
+import { createScriptURL, loadWebAssemblyModuleFromExistingScript, loadWebAssemblyModuleFromScript } from "./core/scriptLoader";
+import { createRemoteSession } from "./core/sessionFactory";
+import { createFuture } from "./core/future";
+import { createBlobURL, disposeBlobURL } from "./core/blobURL";
+import { convertToObj, convertToStr } from "./core/stateDecorators";
 
 /**
  * VtkWASMLoader type definition
@@ -69,14 +14,16 @@ export function loadScriptAsModule(url) {
  * @property {Boolean} loaded
  */
 export class VtkWASMLoader {
-  #wasm;
-  #wasmFile;
+  #config = null;
+  #loaded = false;
+  #pendingLoad = null;
+  #wasmInstance = null;
+
   constructor() {
-    this.loaded = false;
-    this.loadingPending = null;
-    this.config = {};
-    this.#wasm = { url: null, instance: null };
-    this.#wasmFile = null;
+    this.#config = {};
+    this.#loaded = false;
+    this.#pendingLoad = null;
+    this.#wasmInstance = null;
   }
 
   /**
@@ -92,212 +39,148 @@ export class VtkWASMLoader {
    *     exec: "sync", // or "async"
    *   }
    *
-   * @param {str} wasmBaseURL
+   * @param {string} wasmBaseURL
    * @param {object} config - for WASM runtime creation.
-   * @param {str} wasmBaseName - (default is "vtk") base name of the wasm bundle to load. e.g., "vtk" or "addon" will
+   * @param {string} wasmBaseName - (default is "vtk") base name of the wasm bundle to load. e.g., "vtk" or "addon" will
    *                             look for vtkWebAssembly.mjs or addonWebAssembly.mjs in the wasmBaseURL.
    */
   async load(
     wasmBaseURL,
-    config = { rendering: "webgl", exec: "sync" },
+    config = DEFAULT_CONFIG,
     wasmBaseName = "vtk",
   ) {
-    this.config = config;
-    if (this.loaded) {
+    if (this.#loaded) {
       return;
     }
+    validateConfig(config);
+    this.#config = normalizeConfig(config);
 
-    if (!this.loadingPending) {
-      const { promise, resolve } = createFuture();
-      this.loadingPending = promise;
+    if (!this.#pendingLoad) {
+      const { promise, resolve, reject } = createFuture();
+      this.#pendingLoad = promise;
 
-      // WebGPU only works in async mode
-      if (this.config?.rendering === "webgpu") {
-        this.config.exec = "async";
+      // wait for wasm script to load if any (first priority)
+      if (!window.createVTKWASM) {
+        await loadWebAssemblyModuleFromExistingScript(wasmBaseName);
       }
 
-      // wait for wasm script to load if any
+      let wasmFile = null;
       if (!window.createVTKWASM) {
-        let scriptLoaded = null;
-        document.querySelectorAll("script").forEach((script) => {
-          if (script.src.includes(`${wasmBaseName}WebAssembly`)) {
-            const { promise, resolve } = createFuture();
-            script.onload = resolve;
-            scriptLoaded = promise;
+        if (isGzipBundle(wasmBaseURL)) {
+          let gzipArrayBuffer;
+          let javaScriptBlobURL = null;
+          try {
+            gzipArrayBuffer = await fetchGzipBundle(wasmBaseURL);
+          } catch (e) {
+            reject(e);
+            this.#pendingLoad = null;
+            return;
           }
-        });
-        if (scriptLoaded) {
-          await scriptLoaded;
-        }
-      }
-
-      if (!window.createVTKWASM) {
-        // Check which wasm bundle we have
-        let url = null;
-        let jsModuleURL = null;
-
-        // Try newest version first
-        let newModuleResponse = null;
-        if (wasmBaseURL.startsWith("http") && wasmBaseURL.endsWith(".gz")) {
-          // Absolute URL pointing to a GZIP file.
-          newModuleResponse = await fetch(wasmBaseURL);
-          const ds = new DecompressionStream("gzip");
-          const decompressedStream = newModuleResponse.body.pipeThrough(ds);
-          const blob = await new Response(decompressedStream).blob();
-          const arrayBuffer = await blob.arrayBuffer();
-          const files = await untar(arrayBuffer);
-          files.forEach((file) => {
-            file.name = file.name.replace("./", "");
-            if (file.name === `${wasmBaseName}WebAssembly${this.config?.exec === "async" ? "Async" : ""}.mjs`) {
-              jsModuleURL = URL.createObjectURL(new File([file.buffer], file.name, { type: "text/javascript" }));
-            } else if (file.name === `${wasmBaseName}WebAssembly${this.config?.exec === "async" ? "Async" : ""}.wasm`) {
-              this.#wasmFile = file;
+          try {
+            const result = await extractFilesFromGzipBundle(
+              gzipArrayBuffer,
+              this.#config,
+              wasmBaseName,
+            );
+            wasmFile = result.wasm;
+            javaScriptBlobURL = createBlobURL(result.js.buffer, MIME_TYPES.JAVASCRIPT);
+            await loadWebAssemblyModuleFromScript(javaScriptBlobURL);
+          } catch (e) {
+            reject(e);
+            this.#pendingLoad = null;
+            return;
+          }
+          finally {
+            if (javaScriptBlobURL !== null) {
+              disposeBlobURL(javaScriptBlobURL);
             }
-          });
+          }
         } else {
-          url = `${wasmBaseURL}/${wasmBaseName}WebAssembly${this.config?.exec === "async" ? "Async" : ""}.mjs`;
-          newModuleResponse = await fetch(url);
-          if (newModuleResponse.ok) {
-            // In docker we serve the index.html when file don't exist
-            const content = await newModuleResponse.text();
-            if (content[0] !== "<") {
-              // Not html content
-              jsModuleURL = url;
+          try {
+            const scriptURL = await createScriptURL(wasmBaseURL, wasmBaseName, this.#config);
+            await loadWebAssemblyModuleFromScript(scriptURL);
+            // if window.createVTKWASM is still not defined, try legacy loader
+            if (!window.createVTKWASM) {
+              const legacyScriptURL = await createScriptURL(wasmBaseURL, null, null, true);
+              await loadWebAssemblyModuleFromScript(legacyScriptURL);
             }
+          } catch (e) {
+            reject(e);
+            this.#pendingLoad = null;
+            return;
           }
-        }
-
-        // Try older version
-        if (!jsModuleURL) {
-          url = `${wasmBaseURL}/vtkWasmSceneManager.mjs`;
-          const oldModuleResponse = await fetch(url);
-          if (oldModuleResponse.ok) {
-            // In docker we serve the index.html when file don't exist
-            const content = await oldModuleResponse.text();
-            if (content[0] !== "<") {
-              // Not html content
-              jsModuleURL = url;
-            }
-          }
-        }
-
-        // Not sure what to do
-        if (!jsModuleURL) {
-          throw new Error(`Could not fetch wasm bundle from ${wasmBaseURL}`);
-        }
-
-        // Load JS
-        console.log("WASM use", jsModuleURL);
-        await loadScriptAsModule(jsModuleURL);
-        // Cleanup object URL corresponding to the JavaScript module.
-        if (jsModuleURL.startsWith("blob:")) {
-          URL.revokeObjectURL(jsModuleURL);
         }
       }
 
       // Load WASM
       if (window.createVTKWASM) {
-        this.#wasm.instance = await window.createVTKWASM(this.#generateWasmConfig(this.config));
+        try {
+          this.#wasmInstance = await window.createVTKWASM(createEmscriptenConfig(this.#config, wasmFile));
+        } catch (e) {
+          reject(e);
+          this.#pendingLoad = null;
+          return;
+        }
+        this.#loaded = true;
+        resolve();
+        this.#pendingLoad = null;
+      } else {
+        const errorMessage = [
+          "Could not load WebAssembly module: window.createVTKWASM is not available after loading scripts.",
+          "Possible causes include:",
+          `  - Incorrect or unreachable 'wasmBaseURL' ("${wasmBaseURL}")`,
+          `  - Wrong 'wasmBaseName' ("${wasmBaseName}") or missing/misnamed .mjs/.wasm files in the bundle`,
+          "  - Network or script loading failures (e.g., 404/500 responses)",
+          "  - Content Security Policy (CSP) blocking script execution",
+          "",
+          "Next steps:",
+          "  - Verify that the expected .mjs and .wasm files are present and accessible under 'wasmBaseURL'",
+          "  - Check the browser's Network/Console tabs for failed script requests or CSP errors.",
+        ].join("\n");
+        reject(new Error(errorMessage));
+        this.#pendingLoad = null;
       }
-
-      // Capture objects
-      this.loaded = true;
-      resolve();
     } else {
-      await this.loadingPending;
+      await this.#pendingLoad;
     }
   }
 
   /**
    * Create a new remote session and return it regardless of WASM version.
    *
-   * @returns
+   * @returns {Promise<vtkRemoteSession>}
    */
   async createRemoteSession(config) {
-    if (this.#wasm.instance) {
-      // New API
-      if (this.#wasm.instance?.isAsync && this.#wasm.instance.isAsync()) {
-        if (!config || isSameConfig(this.config, config)) {
-          // Reuse the same runtime
-          console.log("(Main runtime in async)");
-          return new this.#wasm.instance.vtkRemoteSession();
-        } else {
-          console.log("(New in async)");
-          const newWASMRuntime = await window.createVTKWASM(
-            this.#generateWasmConfig(config || this.config),
-          );
-          return new newWASMRuntime.vtkRemoteSession();
-        }
-      } else {
-        console.log("(New in sync)");
-        if (!config || isSameConfig(this.config, config)) {
-          // Reuse the same runtime
-          return new this.#wasm.instance.vtkRemoteSession();
-        }
-        else {
-          const newWASMRuntime = await window.createVTKWASM(
-            this.#generateWasmConfig(config || this.config),
-          );
-          return new newWASMRuntime.vtkRemoteSession();
-        }
-      }
+    if (!this.#loaded) {
+      throw new Error("WASM module is not loaded yet. Call load() first.");
     }
-
-    // Old API
-    const remoteSession = await window.createVTKWasmSceneManager();
-    remoteSession.initialize();
+    const remoteSession = await createRemoteSession(config, this.#config, this.#wasmInstance);
     return remoteSession;
   }
 
   /**
    * Create a new standalone session. Only works with new WASM bundle.
    *
-   * @returns
+   * @returns {vtkStandaloneSession}
    */
   createStandaloneSession() {
-    if (!this.#wasm.instance) {
-      throw new Error("Current WASM version does not support standalone mode");
+    if (!this.#loaded) {
+      throw new Error("WASM module is not loaded yet. Call load() first.");
     }
-    return new this.#wasm.instance.vtkStandaloneSession();
+    if (this.#wasmInstance === null) {
+      throw new Error("The currently loaded VTK.wasm version does not support standalone mode");
+    }
+    return new this.#wasmInstance.vtkStandaloneSession();
   }
 
   /** Helper for handling API change */
   createStateDecorator() {
-    if (this.#wasm.instance) {
+    if (!this.#loaded) {
+      throw new Error("WASM module is not loaded yet. Call load() first.");
+    }
+    if (this.#wasmInstance !== null) {
       return convertToObj;
     }
     return convertToStr;
-  }
-
-  /**
-   * Generate a WebAssembly configuration object from a wasmLoader config.
-   * @param {*} config - wasmLoader config with 'rendering' and 'exec' keys.
-   * @returns wasmConfig object
-   */
-  #generateWasmConfig(config) {
-    let wasmConfig = {}
-    if (this.#wasmFile !== null) {
-      wasmConfig.locateFile = (fileName) => {
-        if (this.#wasmFile === null) {
-          throw new Error("WASM file unexpectedly transitioned to null");
-        }
-        if (fileName == this.#wasmFile.name) {
-          this.#wasm.url = URL.createObjectURL(new File([this.#wasmFile.buffer], this.#wasmFile.name, { type: "application/wasm" }));
-          return this.#wasm.url;
-        }
-        return new URL(fileName, import.meta.url).href;
-      };
-      wasmConfig.onRuntimeInitialized = () => {
-        // Free the object URL after runtime is initialized
-        URL.revokeObjectURL(this.#wasm.url);
-        this.#wasm.url = null;
-      };
-    }
-    if (config?.rendering === "webgpu") {
-      wasmConfig.preRun = [(module) => {
-        module.ENV.VTK_GRAPHICS_BACKEND = "WEBGPU";
-      }];
-    }
-    return wasmConfig;
   }
 }
