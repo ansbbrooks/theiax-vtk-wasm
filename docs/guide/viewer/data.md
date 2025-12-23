@@ -16,18 +16,18 @@ The `trame.widget.vtklocal.VtkLocal` widget provides a `save(file_name)` helper 
 </iframe>
 </div>
 
-[Full Screen Viewer](https://kitware.github.io/vtk-wasm/demo/viewer-basic.html)
+[Full Screen Viewer](../../demo/viewer-basic.html){target="_blank"}
 
 <div style="width: 100%; height: 25vh; border-radius: 12px; overflow: hidden; margin: 1rem 0;">
 <iframe src="/vtk-wasm/demo/viewer-porsche.html" style="width: 100%; height: 100%; border: none;">
 </iframe>
 </div>
 
-[Full Screen Viewer](https://kitware.github.io/vtk-wasm/demo/viewer-porsche.html)
+[Full Screen Viewer](../../demo/viewer-porsche.html){target="_blank"}
 
 <div style="width: 100%; height: 25vh; border-radius: 12px; overflow: hidden; margin: 1rem 0;">
 <iframe src="/vtk-wasm/demo/viewer-starfighter.html" style="width: 100%; height: 100%; border: none;">
 </iframe>
 </div>
 
-[Full Screen Viewer](https://kitware.github.io/vtk-wasm/demo/viewer-starfighter.html)
+[Full Screen Viewer](../../demo/viewer-starfighter.html){target="_blank"}
