@@ -11,7 +11,7 @@
     <canvas id="vtk-wasm-window"></canvas>
     <script>
       vtkReady.then((vtk) => {
-        buildWASMScene(vtk); // Also available on window.vtk
+        buildWASMScene(vtk,"This scene assigns the VTK.wasm bundle from GitLab registry to data-url in the script tag"); // Also available on window.vtk
       });
     </script>
   </body>
