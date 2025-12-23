@@ -27,13 +27,6 @@ In this context we provide the URL where the WASM bundle can be found and used f
 
 ## Defer WASM loading with annotation
 
-In this example we tag the script to autoload WASM and create a global vtk namespace.
-
-::: code-group
-<<< ../../public/demo/plain-javascript-annotation.html
-<<< ../../public/demo/example.js
-:::
-
 In this example we tag the script to autoload WASM directly from the VTK repository's package registry and create a global vtk namespace. You can customize the wasm architecture and version by changing the data-url.
 
 ::: code-group
