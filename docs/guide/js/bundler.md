@@ -24,3 +24,5 @@ Here, the VTK.wasm bundle is downloaded in the browser directly from the Gitlab 
 ## Result
 
 <iframe src="/vtk-wasm/demo/simple-app/index.html" style="width: 100%; height: 25vh; border: none;"></iframe>
+
+[Full Screen Viewer](../../demo/simple-app/index.html){target="_blank"}
