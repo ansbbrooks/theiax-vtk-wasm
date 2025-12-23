@@ -8,7 +8,7 @@
     <script src="example.js"></script>
   </head>
   <body>
-    <canvas id="vtk-wasm-window"></canvas>
+    <canvas id="vtk-wasm-window" tabindex="-1" onclick="focus()"></canvas>
     <script>
       vtkReady.then((vtk) => {
         buildWASMScene(vtk,"This scene assigns the VTK.wasm bundle from GitLab registry to data-url in the script tag"); // Also available on window.vtk
