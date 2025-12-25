@@ -1,4 +1,6 @@
-# Plain JavaScript
+# HTML Script Tag
+
+This guide explains how to use VTK-Wasm directly in an HTML file using a `<script>` tag without a build step.
 
 The following examples rely on loading the `vtk.umd.js` bundle from a CDN. Also to mainly focus on the initialization part, we've externalized the JS/WASM code since that part does not change.
 
