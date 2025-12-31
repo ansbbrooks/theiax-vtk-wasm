@@ -86,8 +86,10 @@ export default defineConfig({
           text: "For JavaScript developers",
           items: [
             { text: "Getting started", link: "/guide/js/" },
-            { text: "Plain JavaScript", link: "/guide/js/plain" },
-            { text: "Building an application", link: "/guide/js/bundler" },
+            { text: "Working With Objects", link: "/guide/js/objects" },
+            { text: "Observers", link: "/guide/js/observers" },
+            { text: "HTML Script Tag", link: "/guide/js/plain" },
+            { text: "Bundler Integration", link: "/guide/js/bundler" },
           ],
         },
         {

@@ -1,4 +1,4 @@
-# Modern JavaScript development
+# Bundler Integration
 
 Modern web development rely on package manager to bring project dependencies. This section covers how published releases can be used within a JavaScript project.
 

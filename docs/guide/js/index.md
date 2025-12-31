@@ -1,25 +1,19 @@
-# VTK.wasm from the JavaScript side
+# VTK.wasm from JavaScript
 
-While VTK is a comprehensive C++ library, WASM is giving us an opportunity to enable it on servers and clients like your browser. 
+This guide focuses on using the VTK WASM bundle from plain JavaScript, requiring no prior C++ knowledge.
 
-In this guide we will focus on how WASM can be used from plain JavaScript without any C++ knowledge and using the WASM bundle generated for our trame needs. 
+## Overview
+Most C++ classes from the [VTK C++ Documentation](https://vtk.org/doc/nightly/html/) are available through a single JavaScript object, which we refer to as the **vtk** namespace.
 
-## Available environment
+Once you have access to the **vtk** namespace (see [Bundler Integration](./bundler.md)), you can interact with VTK classes using standard JavaScript.
 
-Web development has many faces between ESM, UMD and plain script usage. Each path is different to some extent so we will cover each of them in their own guide.
+## The Why
 
-- Plain JavaScript usage
-- Using modern bundler
+VTK is a powerful library with a somewhat steep learning curve, but VTK.wasm allows you to use VTK without needing to learn C++. This can be particularly beneficial for web developers who are already familiar with JavaScript and want to integrate advanced visualization capabilities into their web applications.
 
-## What does it looks like?
+The following sections will guide you through the essential aspects of using VTK.wasm with JavaScript:
 
-Since our WASM bundle is based on our trame needs, it currently mainly focus on the rendering stack (PolyData, Mappers and Actors...) but we plan to extend it with more VTK class coverage down the road. 
-
-So if we ignore how to get your hand on a __vtk__ namespace (see section above), you will be able to write code like below to interact with the available VTK classes in plain JavaScript.
-
-<<< ../../public/demo/example.js
-
-Result:
-
-<iframe src="/vtk-wasm/demo/plain-javascript.html" style="width: 100%; height: 40vh; border: none;"></iframe>
-
+- [Working With Objects](./objects.md)
+- [Observers](./observers.md)
+- [HTML Script Tag](./plain.md)
+- [Bundler Integration](./bundler.md)
