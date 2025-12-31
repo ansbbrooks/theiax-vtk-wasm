@@ -1,104 +1,88 @@
-async function buildWASMScene(vtk) {
-// Make up some data array to generate a mesh (JS-only) 
-    function makeQuadMesh(nx, ny) {
-        // Create a grid of points on the XY plane from (0, 0) to (nx, ny)
-        const pointJSArray = []
-        for (let i = 0; i < ny + 1; i++) {
-            for (let j = 0; j < nx + 1; j++) {
-                const x = (j - 0.5 * nx) / nx;
-                const y = (i - 0.5 * ny) / ny;
-                pointJSArray.push(x); // x-coordinate
-                pointJSArray.push(y); // y-coordinate
-                pointJSArray.push(2 * Math.sqrt(x * x + y * y) * Math.sin(x) * Math.cos(y)); // z-coordinate
-            }
-        }
+async function buildWASMScene(vtk, titleText = "Sample VTK.wasm scene") {
 
-        const connectivityJSArray = [];
-        const offsetsJSArray = [];
-        for (let i = 0; i < ny; i++) {
-            for (let j = 0; j < nx; j++) {
-                offsetsJSArray.push(connectivityJSArray.length);
-                connectivityJSArray.push(j + i * (nx + 1));
-                connectivityJSArray.push(j + i * (nx + 1) + 1);
-                connectivityJSArray.push(j + i * (nx + 1) + nx + 2);
-                connectivityJSArray.push(j + i * (nx + 1) + nx + 1);
-            }
-        }
-        offsetsJSArray.push(connectivityJSArray.length);
+  function createSharedTextProperty() {
+    const textProperty = vtk.vtkTextProperty({fontSize: 22});
+    return textProperty;
+  }
 
-        return { 
-            points: pointJSArray, 
-            offsets: offsetsJSArray, 
-            connectivity: connectivityJSArray,
-        };
+  async function createLookupTable(scalarRange) {
+    const lut = vtk.vtkColorTransferFunction();
+    await lut.setColorSpaceToHSV();
+    const colorSeries = vtk.vtkColorSeries({ colorScheme: 16 });
+    const numColors = await colorSeries.getNumberOfColors();
+    const scalarDiff = (scalarRange[1] - scalarRange[0]) / numColors;
+    for (let i = 0; i < numColors; i++) {
+      const color = await colorSeries.getColor(i);
+      const t = scalarRange[0] + i * scalarDiff;
+      lut.addRGBPoint(
+        t,
+        color[0] / 255,
+        color[1] / 255,
+        color[2] / 255,
+      );
     }
-    const meshData = makeQuadMesh(50, 50);
+    await lut.build();
+    return lut;
+  }
 
-    // Working on VTK.wasm
-    // => vtkObject creation is directly available on the vtk namespace
-    const points = vtk.vtkPoints();
-    const polys = vtk.vtkCellArray()
-    const connectivity = vtk.vtkTypeInt32Array();
-    const offsets = vtk.vtkTypeInt32Array();
+  async function createTitleTextActor(titleText, textProperty) {
+    const textActor = vtk.vtkTextActor({ input: titleText, textProperty });
+    const position = await textActor.getPositionCoordinate();
+    await position.setCoordinateSystemToNormalizedViewport();
+    return textActor;
+  }
 
-    // Ways to bind JS data to VTK.wasm types
-    // => method call are async and needs to be awaited
-    // => property can be accessed using the dot notation
-    await points.data.setArray(new Float32Array(meshData.points));
-    await connectivity.setArray(new Int32Array(meshData.connectivity));
-    await offsets.setArray(new Int32Array(meshData.offsets));
+  // Create a VTK source. Output has a point data array named "Scalars" whose range is [0, PI].
+  const shapes = vtk.vtkPartitionedDataSetCollectionSource({ numberOfShapes: 2 });
+  const lut = await createLookupTable([0.0, Math.PI]);
 
-    // Calling methods with other vtkObject as arguments
-    await polys.setData(offsets, connectivity);
+  const mapper = vtk.vtkCompositePolyDataMapper({ lookupTable: lut });
+  await mapper.setInputConnection(await shapes.getOutputPort());
+  const actor = vtk.vtkActor({ mapper, scale: [0.1, 0.1, 0.1] });
+  actor.property.edgeVisibility = true;
+  actor.property.edgeColor = [0.2, 0.2, 0.2];
 
-    // Using properties to set values as a batch update
-    const polyData = vtk.vtkPolyData();
-    polyData.set({ points, polys })
+  const textProperty = createSharedTextProperty();
 
-    // Getting values from method call (async) or property (sync)
-    console.log("NumberOfPoints:", await polyData.getNumberOfPoints());
-    console.log("NumberOfCells:", await polyData.getNumberOfCells());
-    console.log("PolyDataBounds:", await polyData.getBounds());
+  // Create an actor that displays the title.
+  const titleTextActor = await createTitleTextActor(titleText, textProperty);
 
-    // Create object with properties in constructor
-    const mapper = vtk.vtkPolyDataMapper();
-    await mapper.setInputData(polyData);
-    const actor = vtk.vtkActor({ mapper });
+  // Setup rendering part
+  const renderer = vtk.vtkRenderer({ background: [0.384314, 0.364706, 0.352941] });
+  await renderer.addActor(actor);
+  await renderer.addActor(titleTextActor);
+  await renderer.resetCamera();
 
-    // Setting a property even across vtkObjects
-    // Same as: await (await actor.getProperty()).setEdgeVisibility(true);
-    actor.property.edgeVisibility = true;
+  // Create a RenderWindow and bind it to a canvas in the DOM
+  const canvasSelector = "#vtk-wasm-window";
+  const renderWindow = vtk.vtkRenderWindow({ canvasSelector });
+  await renderWindow.addRenderer(renderer);
+  const interactor = vtk.vtkRenderWindowInteractor({
+    canvasSelector,
+    renderWindow,
+  });
+  await interactor.interactorStyle.setCurrentStyleToTrackballCamera();
 
-    // Setup rendering part
-    const renderer = vtk.vtkRenderer();
-    await renderer.addActor(actor);
-    await renderer.resetCamera();
+  // Create camera widget
+  const cameraOrientation = vtk.vtkCameraOrientationWidget({ interactor, parentRenderer: renderer });
+  cameraOrientation.enabled = true;
 
-    // Create a RenderWindow and bind it to a canvas in the DOM
-    const canvasSelector = "#vtk-wasm-window";
-    const renderWindow = vtk.vtkRenderWindow({ canvasSelector });
-    await renderWindow.addRenderer(renderer);
-    const interactor = vtk.vtkRenderWindowInteractor({ 
-        canvasSelector,
-        renderWindow,
-    });
+  // Display the scalar bar at the bottom with a horizontal orientation
+  const scalarBarActor = vtk.vtkScalarBarActor({ 
+    lookupTable: lut,
+    title: "Scalars",
+    titleTextProperty: textProperty,
+    labelTextProperty: textProperty,
+    annotationTextProperty: textProperty,
+    unconstrainedFontSize: true,
+  });
+  const scalarBar = vtk.vtkScalarBarWidget({ scalarBarActor, interactor, defaultRenderer: renderer });
+  const scalarBarRepresentation = await scalarBar.getRepresentation();
+  await scalarBarRepresentation.setOrientation(0); // 1: vertical, 0: horizontal
+  const lowerLeftPosition = await scalarBarRepresentation.getPositionCoordinate();
+  await lowerLeftPosition.setValue([0.1, 0.05]);
+  scalarBar.enabled = true;
 
-    // Trigger render and start interactor
-    await interactor.render();
-    await interactor.start();
-
-    // Observing vtkObject
-    const tag = renderWindow.observe("StartEvent", () => {
-        console.log("Camera position", renderer.activeCamera.position);
-    });
-    setTimeout(() => {
-        // Remove observer for one specific tag
-        renderWindow.unObserve(tag);
-
-        // Remove all observers
-        renderWindow.unObserveAll();
-
-        // Print the full state of a vtkObject
-        console.log("Camera state:", renderer.activeCamera.state);
-    }, 30000);
+  // Trigger render and start interactor
+  await interactor.start();
 }

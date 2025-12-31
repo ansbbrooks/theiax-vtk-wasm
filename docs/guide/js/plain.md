@@ -2,8 +2,6 @@
 
 The following examples rely on loading the `vtk.umd.js` bundle from a CDN. Also to mainly focus on the initialization part, we've externalized the JS/WASM code since that part does not change.
 
-<iframe src="/vtk-wasm/demo/plain-javascript.html" style="width: 100%; height: 40vh; border: none;"></iframe>
-
 ## Load WASM as module
 
 In this example we pre-load the WASM module and therefore we don't need to provide any URL for loading it when creating the __vtk__ namespace.
@@ -17,7 +15,6 @@ In this example we pre-load the WASM module and therefore we don't need to provi
 
 In this example, since we didn't load the WASM module, we need to specify from where it should be loaded.
 
-
 In this context we provide the URL where the WASM bundle can be found and used from.
 
 ::: code-group
@@ -25,14 +22,11 @@ In this context we provide the URL where the WASM bundle can be found and used f
 <<< ../../public/demo/example.js
 :::
 
+<iframe src="/vtk-wasm/demo/plain-javascript.html" style="width: 100%; height: 40vh; border: none;"></iframe>
+
+[Full Screen Viewer](../../demo/plain-javascript.html){target="_blank"}
+
 ## Defer WASM loading with annotation
-
-In this example we tag the script to autoload WASM and create a global vtk namespace.
-
-::: code-group
-<<< ../../public/demo/plain-javascript-annotation.html
-<<< ../../public/demo/example.js
-:::
 
 In this example we tag the script to autoload WASM directly from the VTK repository's package registry and create a global vtk namespace. You can customize the wasm architecture and version by changing the data-url.
 
@@ -40,6 +34,11 @@ In this example we tag the script to autoload WASM directly from the VTK reposit
 <<< ../../public/demo/plain-javascript-annotation-wasm-registry.html
 <<< ../../public/demo/example.js
 :::
+
+<iframe src="/vtk-wasm/demo/plain-javascript-annotation-wasm-registry.html" style="width: 100%; height: 40vh; border: none;"></iframe>
+
+[Full Screen Viewer](../../demo/plain-javascript-annotation-wasm-registry.html){target="_blank"}
+
 
 ## Configuration options
 
