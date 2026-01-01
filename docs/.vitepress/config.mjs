@@ -111,8 +111,8 @@ export default defineConfig({
       "/usecase/": [{ text: "Examples", link: "/usecase/index" }],
     },
 
-    // socialLinks: [
-    //   { icon: 'github', link: 'https://github.com/Kitware/vtk-wasm' }
-    // ]
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/Kitware/vtk-wasm' }
+    ]
   },
 });
