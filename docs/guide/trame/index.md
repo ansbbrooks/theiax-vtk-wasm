@@ -32,7 +32,6 @@ uv venv -p 3.10
 .venv\Scripts\activate
 
 # install dependencies
-# Use `--index-url https://wheels.vtk.org` below for nighlty version of VTK
 uv pip install "vtk>=9.6" --index-url https://wheels.vtk.org --prerelease=allow
 uv pip install "trame>=3.12"            # Install recent trame
 uv pip install trame-vuetify            # - add some nice GUI widget for trame
