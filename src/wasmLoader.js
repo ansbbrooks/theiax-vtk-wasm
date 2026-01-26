@@ -98,7 +98,9 @@ export class VtkWASMLoader {
         } else {
           try {
             const scriptURL = await createScriptURL(wasmBaseURL, wasmBaseName, this.#config);
-            await loadWebAssemblyModuleFromScript(scriptURL);
+            if (scriptURL !== null) {
+              await loadWebAssemblyModuleFromScript(scriptURL);
+            }
             // if window.createVTKWASM is still not defined, try legacy loader
             if (!window.createVTKWASM) {
               const legacyScriptURL = await createScriptURL(wasmBaseURL, null, null, true);
@@ -121,6 +123,12 @@ export class VtkWASMLoader {
           this.#pendingLoad = null;
           return;
         }
+        this.#loaded = true;
+        resolve();
+        this.#pendingLoad = null;
+      } else if (window.createVTKWasmSceneManager) {
+        // Legacy API
+        this.#wasmInstance = null;
         this.#loaded = true;
         resolve();
         this.#pendingLoad = null;

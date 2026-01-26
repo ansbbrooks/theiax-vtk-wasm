@@ -76,6 +76,7 @@ export function loadWebAssemblyModuleFromScript(url) {
  * ensure it exists. If the fetch fails, an error is thrown.
  * 
  * Set legacy to true for legacy-style wasm modules `vtkWasmSceneManager.mjs`, not `vtkWebAssembly[Async].mjs`.
+ * This will resolve with null if the fetch fails for any reason.
  * 
  * This is a fallback when not using GZIP bundles.
  * 
@@ -97,14 +98,17 @@ export async function createScriptURL(wasmBaseURL, wasmBaseName, config, legacy 
   fetch(url)
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`Could not fetch ${filename} from ${url}`);
+        return null;
       }
       return response.text();
     })
     .then((content) => {
+      if (content === null) {
+        resolve(null);
+      }
       // In docker we serve the index.html when the file doesn't exist, so test that this is not html.
       if (isHTMLDocument(content)) {
-        throw new Error(`Could not fetch ${filename} from ${url}`);
+        resolve(null);
       }
       // Not html content
       resolve(url);
