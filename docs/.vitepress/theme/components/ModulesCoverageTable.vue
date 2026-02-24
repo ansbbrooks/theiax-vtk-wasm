@@ -97,7 +97,7 @@ function isNotApplicable(value) {
     <div class="module-group">
       <details v-for="group in serializedModuleGroups" :key="group.name">
         <summary>{{ group.name }} ({{ group.rows.length }})</summary>
-        <table>
+        <table class="module-table">
           <thead>
             <tr>
               <th>Module</th>
@@ -133,8 +133,8 @@ function isNotApplicable(value) {
         class="module-group"
       >
         <summary>{{ group.name }} ({{ group.modules.length }})</summary>
-        <table>
-          <thead class="roadmap-head">
+        <table class="module-table">
+          <thead>
             <tr>
               <th>Module</th>
             </tr>
@@ -154,5 +154,18 @@ function isNotApplicable(value) {
 .module-group summary {
   cursor: pointer;
   font-weight: 600;
+}
+
+.module-table {
+  width: 100%;
+  display: inline-table !important;
+}
+
+.module-table td {
+	text-align: center;
+}
+
+.module-table th {
+	text-align: center;
 }
 </style>
