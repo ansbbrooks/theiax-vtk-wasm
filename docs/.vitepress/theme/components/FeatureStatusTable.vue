@@ -42,7 +42,7 @@ function isNotApplicable(value) {
 </script>
 
 <template>
-	<table>
+	<table class="roadmap-table">
 		<thead class="roadmap-head">
 			<tr>
 				<th>Feature</th>
@@ -69,6 +69,12 @@ function isNotApplicable(value) {
 </template>
 
 <style scoped>
+
+.roadmap-table {
+    width: 100%;
+    display: inline-table !important;
+}
+
 .roadmap-head th {
 	text-align: center;
 }
