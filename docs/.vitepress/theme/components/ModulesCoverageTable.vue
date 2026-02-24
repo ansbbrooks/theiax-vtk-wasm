@@ -373,11 +373,13 @@ function getHighlightParts(text) {
   flex-direction: column;
   align-items: center;
   gap: 0.1rem;
+  width: 100%;
 }
 
 .missing-badge-container {
   position: relative;
   margin-top: 0.1rem;
+  width: 100%;
 }
 
 .missing-badge {
@@ -390,6 +392,7 @@ function getHighlightParts(text) {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  width: 100%;
 }
 
 .missing-badge:hover {
