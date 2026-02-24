@@ -31,10 +31,7 @@ import roadMapData from './features.json';
 
 ## Serialized Modules Coverage
 
-> [!NOTE]
-> Coverage statistics will be added soon.
-
-These modules have been serialized for use in VTK WebAssembly. The status indicates the level of feature support, and missing classes (if any) will be listed for partially implemented modules.
+These modules have been serialized for use in VTK WebAssembly. The status indicates the percentage of classes within each module that have been made available in the JavaScript API.
 
 <ModulesCoverageTable module-group="serialized" />
 

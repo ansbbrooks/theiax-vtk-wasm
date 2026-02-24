@@ -82,30 +82,11 @@
         "description": {
           "type": "string"
         },
-        "coverage": {
-          "anyOf": [
-            {
-              "type": "number",
-              "minimum": 0,
-              "maximum": 100
-            },
-            {
-              "const": "na"
-            }
-          ]
-        },
-        "missingClasses": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
         "status": {
           "type": "string",
           "enum": [
-            "fully-implemented",
+            "available",
             "partially-implemented",
-            "planned",
             "na"
           ]
         },

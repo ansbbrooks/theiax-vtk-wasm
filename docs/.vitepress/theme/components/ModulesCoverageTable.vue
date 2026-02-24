@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import featuresData from '../../../roadmap/features.json';
+import { getModuleCoverage } from '../utils';
 
 const props = defineProps({
 	moduleGroup: {
@@ -70,12 +71,23 @@ const notSerializedModuleGroups = computed(() => {
     .sort((a, b) => a.name.localeCompare(b.name));
 })
 
+const moduleCoverage = ref(new Map());
+
+onMounted(async () => {
+  try {
+    moduleCoverage.value = await getModuleCoverage();
+  } catch (error) {
+    console.error('Failed to fetch module coverage data', error);
+    moduleCoverage.value = new Map();
+  }
+});
+
 function formatCoverage(value) {
-  if (value === undefined || value === null || value === 'na') {
+  if (value === undefined || value === null) {
     return '—';
   }
   if (typeof value === 'number') {
-    return `${value}%`;
+    return `${value.toFixed(1)}%`;
   }
   return String(value);
 }
@@ -106,15 +118,15 @@ function isNotApplicable(value) {
           </thead>
           <tbody>
             <tr v-for="row in group.rows" :key="row.module">
-              <td>{{ row.module }}</td>
+              <td>{{ row.module }} </td>
               <td>
                   <div>
-                      <template v-if="row.status === 'fully-implemented'">
+                      <template v-if="row.status === 'available'">
                           <div>✓</div>
                           <small>{{ row.version || '—' }}</small>
                       </template>
                       <template v-else-if="isNotApplicable(row.version) || row.status === 'na'">⊘</template>
-                      <template v-else-if="row.status === 'planned' || row.status === 'partially-implemented'">WIP</template>
+                      <template v-else-if="row.status === 'partially-implemented'">{{ formatCoverage(moduleCoverage?.get(row.module)?.coverage) }}<div>completed</div></template>
                       <template v-else>—</template>
                   </div>
               </td>
