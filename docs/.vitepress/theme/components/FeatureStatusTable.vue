@@ -79,6 +79,10 @@ function isNotApplicable(value) {
 	text-align: center;
 }
 
+.roadmap-table td {
+	text-align: center;
+}
+
 .status-cell {
 	display: flex;
 	flex-direction: column;
