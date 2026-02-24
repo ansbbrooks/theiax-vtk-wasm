@@ -145,7 +145,7 @@ function closeMissingPopover() {
 }
 
 function onDocumentClick(event) {
-  if (!event.target.closest('.missing-badge-container')) {
+  if (!event.target.closest('.progress-badge-container')) {
     closeMissingPopover();
   }
 }
@@ -269,17 +269,17 @@ function getHighlightParts(text) {
                       </template>
                       <template v-else-if="isNotApplicable(row.version) || row.status === 'na'">⊘</template>
                       <template v-else-if="row.status === 'partially-implemented'">
-                        <div v-if="getMissingCount(row.module) > 0" class="missing-badge-container">
+                        <div v-if="getMissingCount(row.module) > 0" class="progress-badge-container">
                           <button
                             type="button"
-                            class="missing-badge"
+                            class="progress-badge"
                             :aria-expanded="isMissingPopoverOpen(row.module)"
                             :aria-controls="getMissingPopoverId(row.module)"
                             :style="{ '--missing-progress': `${getCoveragePercent(row.module)}%` }"
                             @click.stop="toggleMissingPopover(row.module)"
                           >
-                            <span class="missing-badge-fill" aria-hidden="true" />
-                            <span class="missing-badge-label">{{ getMissingCount(row.module) }} missing · {{ formatCoverage(getCoveragePercent(row.module)) }}</span>
+                            <span class="progress-badge-fill" aria-hidden="true" />
+                            <span class="progress-badge-label">{{ getMissingCount(row.module) }} missing · {{ formatCoverage(getCoveragePercent(row.module)) }}</span>
                           </button>
                           <div
                             v-if="isMissingPopoverOpen(row.module)"
@@ -376,13 +376,13 @@ function getHighlightParts(text) {
   width: 100%;
 }
 
-.missing-badge-container {
+.progress-badge-container {
   position: relative;
   margin-top: 0.1rem;
   width: 100%;
 }
 
-.missing-badge {
+.progress-badge {
   border: 2px solid var(--vp-c-divider);
   background: var(--vp-c-bg-soft);
   color: var(--vp-c-text-1);
@@ -395,12 +395,12 @@ function getHighlightParts(text) {
   width: 100%;
 }
 
-.missing-badge:hover {
+.progress-badge:hover {
   border-color: var(--vp-c-brand-1);
   color: var(--vp-c-brand-1);
 }
 
-.missing-badge-fill {
+.progress-badge-fill {
   position: absolute;
   inset: 0;
   width: var(--missing-progress, 0%);
@@ -408,7 +408,7 @@ function getHighlightParts(text) {
   pointer-events: none;
 }
 
-.missing-badge-label {
+.progress-badge-label {
   position: relative;
   z-index: 1;
 }
