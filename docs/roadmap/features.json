@@ -147,11 +147,6 @@
         "status": "partially-implemented",
         "version": "9.5.0"
       },
-      "VTK::CommonMisc": {
-        "description": "Serialization coverage for VTK::CommonMisc",
-        "status": "available",
-        "version": "9.5.0"
-      },
       "VTK::CommonTransforms": {
         "description": "Serialization coverage for VTK::CommonTransforms",
         "status": "partially-implemented",
@@ -203,7 +198,6 @@
         "version": "9.5.0"
       },
       "VTK::RenderingCore": {
-        "coverage": 95,
         "description": "Serialization coverage for VTK::RenderingCore",
         "status": "partially-implemented",
         "version": "9.5.0"
@@ -267,7 +261,7 @@
     "unavailable": [
       "VTK::CommonArchive",
       "VTK::CommonComputationalGeometry",
-      "VTK::CommonMath",
+      "VTK::CommonMisc",
       "VTK::CommonSystem",
       "VTK::DomainsChemistry",
       "VTK::DomainsChemistryOpenGL2",

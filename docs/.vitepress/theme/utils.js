@@ -13,13 +13,17 @@ function getClassNameFromHeaderFileName(headerFileName) {
   return classToken.replace(/\.[^/.]+$/, "");
 }
 
-function getClassCountPerModule(headerList) {
-  const classCountMap = new Map();
+function getClassListPerModule(headerList) {
+  const classListMap = new Map();
   for (const headerFileName of normalizeHeaderList(headerList)) {
     const moduleName = getModuleNameFromHeaderFileName(headerFileName);
-    classCountMap.set(moduleName, (classCountMap.get(moduleName) || 0) + 1);
+    if (!classListMap.has(moduleName)) {
+      classListMap.set(moduleName, []);
+    }
+    console.log(`Adding class ${getClassNameFromHeaderFileName(headerFileName)} to module ${moduleName}`);
+    classListMap.get(moduleName).push(getClassNameFromHeaderFileName(headerFileName));
   }
-  return classCountMap;
+  return classListMap;
 }
 
 function getClassNamesPerModule(headerList) {
@@ -41,20 +45,23 @@ function getClassNamesPerModule(headerList) {
 }
 
 class ModuleCoverageStatistics {
-  constructor(moduleName, autoCount, ignoreCount, manualCount, missingClasses = []) {
+  constructor(moduleName, autoClasses, manualClasses, ignoreClasses) {
     this.moduleName = moduleName;
-    this.autoCount = autoCount;
-    this.ignoreCount = ignoreCount;
-    this.manualCount = manualCount;
-    this.missingClasses = missingClasses;
+    this.autoClasses = autoClasses;
+    this.ignoreClasses = ignoreClasses;
+    this.manualClasses = manualClasses;
+  }
+
+  get completedCount() {
+    return this.autoClasses.length + this.manualClasses.length;
   }
 
   get totalCount() {
-    return this.autoCount + this.ignoreCount + this.manualCount;
+    return this.autoClasses.length + this.ignoreClasses.length + this.manualClasses.length;
   }
 
-  get coverage() {
-    return this.totalCount > 0 ? 100.0 * (this.autoCount + this.manualCount) / this.totalCount : 0;
+  get coveragePercent() {
+    return this.totalCount > 0 ? 100.0 * (this.autoClasses.length + this.manualClasses.length) / this.totalCount : 0;
   }
 }
 
@@ -71,10 +78,9 @@ export async function getModuleCoverage() {
     fetchHeaderList("https://raw.githubusercontent.com/Kitware/VTK/refs/heads/master/Utilities/Marshalling/VTK_MARSHALMANUAL.txt"),
   ]);
 
-  const autoMap = getClassCountPerModule(autoHeaderList);
-  const ignoreMap = getClassCountPerModule(ignoreHeaderList);
-  const manualMap = getClassCountPerModule(manualHeaderList);
-  const missingClassesMap = getClassNamesPerModule(ignoreHeaderList);
+  const autoMap = getClassListPerModule(autoHeaderList);
+  const ignoreMap = getClassListPerModule(ignoreHeaderList);
+  const manualMap = getClassListPerModule(manualHeaderList);
 
   const allModules = new Set([...autoMap.keys(), ...ignoreMap.keys(), ...manualMap.keys()]);
 
@@ -84,10 +90,9 @@ export async function getModuleCoverage() {
       moduleName,
       new ModuleCoverageStatistics(
         moduleName,
-        autoMap.get(moduleName) || 0,
-        ignoreMap.get(moduleName) || 0,
-        manualMap.get(moduleName) || 0,
-        missingClassesMap.get(moduleName) || []
+        autoMap.get(moduleName) || [],
+        manualMap.get(moduleName) || [],
+        ignoreMap.get(moduleName) || []
       )
     );
   }
