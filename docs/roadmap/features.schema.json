@@ -13,13 +13,13 @@
         "$ref": "#/definitions/feature-version-group"
       }
     },
-    "moduleSerialization": {
-      "$ref": "#/definitions/module-serialization"
+    "moduleStatus": {
+      "$ref": "#/definitions/module-status"
     }
   },
   "required": [
     "featureVersionGroups",
-    "moduleSerialization"
+    "moduleStatus"
   ],
   "additionalProperties": false,
   "definitions": {
@@ -67,7 +67,7 @@
         },
         "features": {
           "type": "array",
-          "elements": {
+          "items": {
             "type": "object",
             "additionalProperties": {
               "$ref": "#/definitions/feature-info"
@@ -76,7 +76,7 @@
         }
       }
     },
-    "module-serdes": {
+    "available-module-status": {
       "type": "object",
       "properties": {
         "description": {
@@ -112,16 +112,16 @@
         "status"
       ]
     },
-    "module-serialization": {
+    "module-status": {
       "type": "object",
       "properties": {
-        "serializedModules": {
+        "available": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/definitions/module-serdes"
+            "$ref": "#/definitions/available-module-status"
           }
         },
-        "notSerializedModules": {
+        "unavailable": {
           "type": "array",
           "items": {
             "type": "string"
@@ -129,8 +129,8 @@
         }
       },
       "required": [
-        "serializedModules",
-        "notSerializedModules"
+        "available",
+        "unavailable"
       ],
       "additionalProperties": false
     }

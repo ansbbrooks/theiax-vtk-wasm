@@ -115,8 +115,156 @@
       ]
     }
   },
-  "moduleSerialization": {
-    "notSerializedModules": [
+  "moduleStatus": {
+    "available": {
+      "VTK::ChartsCore": {
+        "description": "Serialization coverage for VTK::ChartsCore",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::CommonColor": {
+        "description": "Serialization coverage for VTK::CommonColor",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::CommonCore": {
+        "description": "Serialization coverage for VTK::CommonCore",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::CommonDataModel": {
+        "description": "Serialization coverage for VTK::CommonDataModel",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::CommonExecutionModel": {
+        "description": "Serialization coverage for VTK::CommonExecutionModel",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::CommonMath": {
+        "description": "Serialization coverage for VTK::CommonMath",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::CommonMisc": {
+        "description": "Serialization coverage for VTK::CommonMisc",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::CommonTransforms": {
+        "description": "Serialization coverage for VTK::CommonTransforms",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::FiltersCore": {
+        "description": "Serialization coverage for VTK::FiltersCore",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::FiltersSources": {
+        "description": "Serialization coverage for VTK::FiltersSources",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::ImagingColor": {
+        "description": "Serialization coverage for VTK::ImagingColor",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::ImagingCore": {
+        "description": "Serialization coverage for VTK::ImagingCore",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::InteractionStyle": {
+        "description": "Serialization coverage for VTK::InteractionStyle",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::InteractionWidgets": {
+        "description": "Serialization coverage for VTK::InteractionWidgets",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::RenderingAnnotation": {
+        "description": "Serialization coverage for VTK::RenderingAnnotation",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::RenderingContext2D": {
+        "description": "Serialization coverage for VTK::RenderingContext2D",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::RenderingContextOpenGL2": {
+        "description": "Serialization coverage for VTK::RenderingContextOpenGL2",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::RenderingCore": {
+        "coverage": 95,
+        "description": "Serialization coverage for VTK::RenderingCore",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::RenderingGridAxes": {
+        "description": "Serialization coverage for VTK::RenderingGridAxes",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::RenderingImage": {
+        "description": "Serialization coverage for VTK::RenderingImage",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::RenderingLabel": {
+        "description": "Serialization coverage for VTK::RenderingLabel",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::RenderingOpenGL2": {
+        "description": "Serialization coverage for VTK::RenderingOpenGL2",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::RenderingUI": {
+        "description": "Serialization coverage for VTK::RenderingUI",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::RenderingVolume": {
+        "description": "Serialization coverage for VTK::RenderingVolume",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::RenderingVolumeOpenGL2": {
+        "description": "Serialization coverage for VTK::RenderingVolumeOpenGL2",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::RenderingWebGPU": {
+        "description": "Serialization coverage for VTK::RenderingWebGPU",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      },
+      "VTK::ViewsContext2D": {
+        "description": "Serialization coverage for VTK::ViewsContext2D",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::ViewsCore": {
+        "description": "Serialization coverage for VTK::ViewsCore",
+        "status": "available",
+        "version": "9.5.0"
+      },
+      "VTK::ViewsInfovis": {
+        "description": "Serialization coverage for VTK::ViewsInfovis",
+        "status": "partially-implemented",
+        "version": "9.5.0"
+      }
+    },
+    "unavailable": [
       "VTK::CommonArchive",
       "VTK::CommonComputationalGeometry",
       "VTK::CommonMath",
@@ -273,154 +421,6 @@
       "VTK::RenderingVolumeAMR",
       "VTK::RenderingVtkJS",
       "VTK::RenderingZSpace"
-    ],
-    "serializedModules": {
-      "VTK::ChartsCore": {
-        "description": "Serialization coverage for VTK::ChartsCore",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::CommonColor": {
-        "description": "Serialization coverage for VTK::CommonColor",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::CommonCore": {
-        "description": "Serialization coverage for VTK::CommonCore",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::CommonDataModel": {
-        "description": "Serialization coverage for VTK::CommonDataModel",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::CommonExecutionModel": {
-        "description": "Serialization coverage for VTK::CommonExecutionModel",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::CommonMath": {
-        "description": "Serialization coverage for VTK::CommonMath",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::CommonMisc": {
-        "description": "Serialization coverage for VTK::CommonMisc",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::CommonTransforms": {
-        "description": "Serialization coverage for VTK::CommonTransforms",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::FiltersCore": {
-        "description": "Serialization coverage for VTK::FiltersCore",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::FiltersSources": {
-        "description": "Serialization coverage for VTK::FiltersSources",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::ImagingColor": {
-        "description": "Serialization coverage for VTK::ImagingColor",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::ImagingCore": {
-        "description": "Serialization coverage for VTK::ImagingCore",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::InteractionStyle": {
-        "description": "Serialization coverage for VTK::InteractionStyle",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::InteractionWidgets": {
-        "description": "Serialization coverage for VTK::InteractionWidgets",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::RenderingAnnotation": {
-        "description": "Serialization coverage for VTK::RenderingAnnotation",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::RenderingContext2D": {
-        "description": "Serialization coverage for VTK::RenderingContext2D",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::RenderingContextOpenGL2": {
-        "description": "Serialization coverage for VTK::RenderingContextOpenGL2",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::RenderingCore": {
-        "coverage": 95,
-        "description": "Serialization coverage for VTK::RenderingCore",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::RenderingGridAxes": {
-        "description": "Serialization coverage for VTK::RenderingGridAxes",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::RenderingImage": {
-        "description": "Serialization coverage for VTK::RenderingImage",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::RenderingLabel": {
-        "description": "Serialization coverage for VTK::RenderingLabel",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::RenderingOpenGL2": {
-        "description": "Serialization coverage for VTK::RenderingOpenGL2",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::RenderingUI": {
-        "description": "Serialization coverage for VTK::RenderingUI",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::RenderingVolume": {
-        "description": "Serialization coverage for VTK::RenderingVolume",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::RenderingVolumeOpenGL2": {
-        "description": "Serialization coverage for VTK::RenderingVolumeOpenGL2",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::RenderingWebGPU": {
-        "description": "Serialization coverage for VTK::RenderingWebGPU",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      },
-      "VTK::ViewsContext2D": {
-        "description": "Serialization coverage for VTK::ViewsContext2D",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::ViewsCore": {
-        "description": "Serialization coverage for VTK::ViewsCore",
-        "status": "available",
-        "version": "9.5.0"
-      },
-      "VTK::ViewsInfovis": {
-        "description": "Serialization coverage for VTK::ViewsInfovis",
-        "status": "partially-implemented",
-        "version": "9.5.0"
-      }
-    }
+    ]
   }
 }
