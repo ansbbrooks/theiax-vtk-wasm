@@ -6,6 +6,8 @@
 > [!NOTE]
 > Detailed information about each feature will be added soon.
 
+Contribute to this data here: [features.json](https://github.com/Kitware/vtk-wasm/blob/main/docs/roadmap/features.json)
+
 <script setup>
 import roadMapData from './features.json';
 </script>
