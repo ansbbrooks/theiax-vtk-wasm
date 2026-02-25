@@ -4,9 +4,13 @@
     --vp-home-hero-name-color: transparent;
     --vp-home-hero-name-background: -webkit-linear-gradient(15deg, #2C68C0, #5DAC41);
 
-    --vp-c-brand-1: #2C68C0;
+    --vp-c-brand-1: #004AB9;
     --vp-c-brand-2: #5DAC41;
     --vp-c-sponsor: #ccc;
+}
+
+.dark {
+    --vp-c-brand-1: #8DB7F7;
 }
 
 .viewers-items {

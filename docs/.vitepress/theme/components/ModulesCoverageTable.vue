@@ -592,7 +592,6 @@ function getClassNameHighlightParts(className) {
 
 .progress-badge:hover {
   border-color: var(--vp-c-brand-1);
-  color: var(--vp-c-brand-1);
 }
 
 .progress-badge-fill {
