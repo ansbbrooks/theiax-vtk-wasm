@@ -82,5 +82,33 @@ export function createEmscriptenConfig(config, wasmFile) {
     },
     ...userPreRun];
   }
+  {
+    const print = config?.print;
+    if (print != null) {
+      if (typeof print !== 'function') {
+        throw new Error(`config.print must be a function, if provided`);
+      }
+      // Wrap the user-provided config.print() function in another
+      // function to ensure that we control the function signature
+      // that is provided to the final emscriptenConfig object.
+      emscriptenConfig.print = (text) => {
+        print(text);
+      };
+    }
+  }
+  {
+    const printErr = config?.printErr;
+    if (printErr != null) {
+      if (typeof printErr !== 'function') {
+        throw new Error(`config.printErr must be a function, if provided`);
+      }
+      // Wrap the user-provided config.printErr() function in another
+      // function to ensure that we control the function signature
+      // that is provided to the final emscriptenConfig object.
+      emscriptenConfig.printErr = (text) => {
+        printErr(text);
+      };
+    }
+  }
   return emscriptenConfig;
 }
