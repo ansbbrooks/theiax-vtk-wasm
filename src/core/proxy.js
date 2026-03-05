@@ -85,11 +85,15 @@ export function createVtkObjectProxy(
     toString,
     unObserve,
     unObserveAll,
+    userData: {},
   };
   const vtkProxy = new Proxy(target, {
     get(target, prop, resolver) {
       if (target[prop] !== undefined) {
         return target[prop];
+      }
+      if (target.userData[prop] !== undefined) {
+        return target.userData[prop];
       }
       if (prop === "then") {
         return resolver;
@@ -113,26 +117,24 @@ export function createVtkObjectProxy(
       if (propGetters[prop]) {
         return propGetters[prop]();
       }
-      if (!target[prop]) {
-        // console.log("register method", prop, toCxxName(prop));
-        target[prop] = async (...args) =>
-          wrapMethods.decorateResult(
-            await wasm.invoke(
-              vtkId,
-              toCxxName(prop),
-              wrapMethods.decorateArgs(args),
-            ),
-          );
-      }
+      // ideally we should have a json structure to check available methods
+      target[prop] = async (...args) =>
+        wrapMethods.decorateResult(
+          await wasm.invoke(
+            vtkId,
+            toCxxName(prop),
+            wrapMethods.decorateArgs(args),
+          ),
+        );
       return target[prop];
     },
     set(target, property, value) {
       if (propSetters[property]) {
         propSetters[property](value);
-        return true;
       } else {
-        return false;
+        target.userData[property] = value;
       }
+      return true;
     },
   });
 
