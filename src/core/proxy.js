@@ -43,6 +43,14 @@ export function createVtkObjectProxy(
 
   // Create methods
   const observerTags = [];
+  function deleteObject() {
+    const result = wasm.destroy(vtkId);
+    if (result) {
+      const removedProxy = idToRef.delete(vtkId);
+      vtkProxyCache.delete(removedProxy);
+    }
+    return result;
+  }
   function set(props) {
     return wasm.set(vtkId, wrapMethods.decorateKwargs(toCxxKeys(props)));
   }
@@ -63,6 +71,13 @@ export function createVtkObjectProxy(
       unObserve(observerTags.pop());
     }
   }
+  function toString() {
+    return wasm.printObjectToString(vtkId);
+  }
+
+  function toJSON() {
+    return toJsKeys(wasm.get(vtkId));
+  }
   const propGetters = createPropGetter(wasm, wrapMethods, vtkId);
   const propSetters = createPropSetter(wasm, wrapMethods, vtkId);
 
@@ -74,23 +89,22 @@ export function createVtkObjectProxy(
     obj: { Id: vtkId },
     set,
     observe,
+    toJSON,
+    toString,
     unObserve,
     unObserveAll,
+    userData: {},
   };
   const vtkProxy = new Proxy(target, {
     get(target, prop, resolver) {
+      if (target[prop] !== undefined) {
+        return target[prop];
+      }
+      if (target.userData[prop] !== undefined) {
+        return target.userData[prop];
+      }
       if (prop === "then") {
         return resolver;
-      }
-      if (prop === "toString") {
-        return () => {
-          return wasm.printObjectToString(vtkId);
-        }
-      }
-      if (prop === "toJSON") {
-        return () => {
-          return toJsKeys(wasm.get(vtkId));
-        }
       }
       if (prop === "state") {
         if (!wasm.get) {
@@ -101,34 +115,29 @@ export function createVtkObjectProxy(
         return toJsKeys(wasm.get(vtkId));
       }
       if (prop === "delete") {
-        const result = wasm.destroy(vtkId);
-        if (result) {
-          const removedProxy = idToRef.delete(vtkId);
-          vtkProxyCache.delete(removedProxy);
-        }
-        return result;
+        return deleteObject;
       }
       if (propGetters[prop]) {
         return propGetters[prop]();
       }
-      if (!target[prop]) {
-        // console.log("register method", prop, toCxxName(prop));
-        target[prop] = async (...args) =>
-          wrapMethods.decorateResult(
-            await wasm.invoke(
-              vtkId,
-              toCxxName(prop),
-              wrapMethods.decorateArgs(args),
-            ),
-          );
-      }
+      // ideally we should have a json structure to check available methods
+      target[prop] = async (...args) =>
+        wrapMethods.decorateResult(
+          await wasm.invoke(
+            vtkId,
+            toCxxName(prop),
+            wrapMethods.decorateArgs(args),
+          ),
+        );
       return target[prop];
     },
     set(target, property, value) {
       if (propSetters[property]) {
         propSetters[property](value);
+      } else {
+        target.userData[property] = value;
       }
-      return value;
+      return true;
     },
   });
 
