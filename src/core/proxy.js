@@ -43,6 +43,14 @@ export function createVtkObjectProxy(
 
   // Create methods
   const observerTags = [];
+  function deleteObject() {
+    const result = wasm.destroy(vtkId);
+    if (result) {
+      const removedProxy = idToRef.delete(vtkId);
+      vtkProxyCache.delete(removedProxy);
+    }
+    return result;
+  }
   function set(props) {
     return wasm.set(vtkId, wrapMethods.decorateKwargs(toCxxKeys(props)));
   }
@@ -107,12 +115,7 @@ export function createVtkObjectProxy(
         return toJsKeys(wasm.get(vtkId));
       }
       if (prop === "delete") {
-        const result = wasm.destroy(vtkId);
-        if (result) {
-          const removedProxy = idToRef.delete(vtkId);
-          vtkProxyCache.delete(removedProxy);
-        }
-        return result;
+        return deleteObject;
       }
       if (propGetters[prop]) {
         return propGetters[prop]();
