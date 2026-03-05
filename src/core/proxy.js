@@ -63,6 +63,13 @@ export function createVtkObjectProxy(
       unObserve(observerTags.pop());
     }
   }
+  function toString() {
+    return wasm.printObjectToString(vtkId);
+  }
+
+  function toJSON() {
+    return toJsKeys(wasm.get(vtkId));
+  }
   const propGetters = createPropGetter(wasm, wrapMethods, vtkId);
   const propSetters = createPropSetter(wasm, wrapMethods, vtkId);
 
@@ -74,23 +81,18 @@ export function createVtkObjectProxy(
     obj: { Id: vtkId },
     set,
     observe,
+    toJSON,
+    toString,
     unObserve,
     unObserveAll,
   };
   const vtkProxy = new Proxy(target, {
     get(target, prop, resolver) {
+      if (target[prop] !== undefined) {
+        return target[prop];
+      }
       if (prop === "then") {
         return resolver;
-      }
-      if (prop === "toString") {
-        return () => {
-          return wasm.printObjectToString(vtkId);
-        }
-      }
-      if (prop === "toJSON") {
-        return () => {
-          return toJsKeys(wasm.get(vtkId));
-        }
       }
       if (prop === "state") {
         if (!wasm.get) {
