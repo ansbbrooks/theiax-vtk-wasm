@@ -127,8 +127,10 @@ export function createVtkObjectProxy(
     set(target, property, value) {
       if (propSetters[property]) {
         propSetters[property](value);
+        return true;
+      } else {
+        return false;
       }
-      return value;
     },
   });
 
