@@ -82,6 +82,11 @@ export function createVtkObjectProxy(
       if (prop === "then") {
         return resolver;
       }
+      if (prop === "toJSON") {
+        return () => {
+          return toJsKeys(wasm.get(vtkId));
+        }
+      }
       if (prop === "state") {
         if (!wasm.get) {
           // To support old remote API
