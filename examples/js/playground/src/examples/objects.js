@@ -29,7 +29,9 @@ renderer.activeCamera = camera;
 // await renderer.setActiveCamera(camera); // same as above
 console.log("New active camera at: ", renderer.activeCamera.position)
 /// 4. Print a VTK object using JSON.stringify
-console.log(JSON.stringify(renderer));`;
+console.log(JSON.stringify(renderer));
+/// 5. Print a VTK object using toString (calls C++ Print() directly)
+console.log(renderer.toString());
 const editorHeightPx = 400;
 const iframeMinHeightPx = 0;
 export { htmlCode, jsCode, editorHeightPx, iframeMinHeightPx };

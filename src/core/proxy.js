@@ -82,6 +82,11 @@ export function createVtkObjectProxy(
       if (prop === "then") {
         return resolver;
       }
+      if (prop === "toString") {
+        return () => {
+          return wasm.printObjectToString(vtkId);
+        }
+      }
       if (prop === "toJSON") {
         return () => {
           return toJsKeys(wasm.get(vtkId));
