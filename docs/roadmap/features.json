@@ -12,29 +12,15 @@
           }
         },
         {
-          "pipeline-parity-with-vtkjs": {
-            "description": "Pipeline parity with vtk.js",
-            "status": "planned",
-            "version": "na"
-          }
-        },
-        {
-          "rendering-feature-parity": {
-            "description": "Rendering feature parity with VTK desktop",
-            "status": "planned",
-            "version": "na"
-          }
-        },
-        {
-          "serialization-mtime-optimization": {
-            "description": "MTime optimization for serialization",
+          "manage-user-observers": {
+            "description": "API to remove all observers that users added via vtkSession.Observe()",
             "status": "planned",
             "version": "na"
           }
         },
         {
           "shared-libraries": {
-            "description": "Shared libraries",
+            "description": "Build VTK.wasm with shared library support",
             "status": "planned",
             "version": "na"
           }
@@ -59,22 +45,8 @@
       "description": "Features released in 9.6.0",
       "features": [
         {
-          "javascript-object-api-parity": {
-            "description": "JavaScript object API parity",
-            "status": "implemented",
-            "version": "9.6.0"
-          }
-        },
-        {
-          "python-trame-parity": {
-            "description": "Trame local rendering parity",
-            "status": "implemented",
-            "version": "9.6.0"
-          }
-        },
-        {
           "remote-session-bulk-get-set": {
-            "description": "Bulk get/set session API",
+            "description": "API to get/set properties of an object in bulk via vtkSession.Get, vtkSession.Set",
             "status": "implemented",
             "version": "9.6.0"
           }

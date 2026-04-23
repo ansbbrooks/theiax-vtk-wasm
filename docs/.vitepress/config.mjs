@@ -54,7 +54,6 @@ export default defineConfig({
       { text: "Roadmap",
         items: [
           { text: "Overview", link: "/roadmap/" },
-          { text: "Feature Status", link: "/roadmap/features" },
           { text: "Module Availability", link: "/roadmap/modules" },
         ]
       },
@@ -117,7 +116,6 @@ export default defineConfig({
       ],
       "/roadmap/": [
         { text: "Overview", link: "/roadmap/" },
-        { text: "Feature Status", link: "/roadmap/features" },
         { text: "Module Availability", link: "/roadmap/modules" },
       ],
       "/usecase/": [{ text: "Examples", link: "/usecase/index" }],
