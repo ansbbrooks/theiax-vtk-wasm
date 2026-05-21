@@ -11,7 +11,7 @@ import { createInstantiatorProxy } from "./core/proxy";
  * @param {Object} config
  * @param {string} [wasmBaseName] - (default is `"vtk"`) base name of the wasm bundle to load. e.g., `"vtk"` or `"addon"` will
  *                             look for vtkWebAssembly.mjs or addonWebAssembly.mjs in the wasmBaseURL.
- * @param {boolean} [urlIsGzipBundle] - (default is `true`) specifies whether the resource at `wasmBaseURL` is in Gzip format.
+ * @param {boolean} [urlIsGzipBundle] - (default is `true`) specifies whether the resource at `wasmBaseURL` is a Gzip archive.
  *
  * @returns the vtk namespace for creating VTK objects.
  */
