@@ -9,15 +9,23 @@ import { createInstantiatorProxy } from "./core/proxy";
  *                  If vtkWebAssemblyInterface.mjs is already loaded as a script,
  *                  this will be ignored.
  * @param {Object} config
+ * @param {string} [wasmBaseName] - (default is `"vtk"`) base name of the wasm bundle to load. e.g., `"vtk"` or `"addon"` will
+ *                             look for vtkWebAssembly.mjs or addonWebAssembly.mjs in the wasmBaseURL.
+ * @param {boolean} [urlIsGzipBundle] - (default is `true`) specifies whether the resource at `wasmBaseURL` is in Gzip format.
  *
  * @returns the vtk namespace for creating VTK objects.
  */
-export async function createNamespace(url, config = {}, wasmBaseName = "vtk") {
+export async function createNamespace(
+    url,
+    config = {},
+    wasmBaseName = "vtk",
+    urlIsGzipBundle = true,
+) {
   const vtkProxyCache = new WeakMap();
   const idToRef = new Map();
 
   const loader = new VtkWASMLoader();
-  await loader.load(url || "loaded-module", config, wasmBaseName);
+  await loader.load(url || "loaded-module", config, wasmBaseName, urlIsGzipBundle);
   const wasm = loader.createStandaloneSession();
 
   return createInstantiatorProxy(wasm, vtkProxyCache, idToRef);

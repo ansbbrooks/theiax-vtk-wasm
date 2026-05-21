@@ -1,4 +1,4 @@
-import { extractFilesFromGzipBundle, fetchGzipBundle, isGzipBundle } from "./core/gzipBundle";
+import { extractFilesFromGzipBundle, fetchGzipBundle } from "./core/gzipBundle";
 import { createEmscriptenConfig, normalizeConfig, validateConfig } from "./core/configManager";
 import { DEFAULT_CONFIG, MIME_TYPES } from "./core/constants";
 import { createScriptURL, loadWebAssemblyModuleFromExistingScript, loadWebAssemblyModuleFromScript } from "./core/scriptLoader";
@@ -41,13 +41,15 @@ export class VtkWASMLoader {
    *
    * @param {string} wasmBaseURL
    * @param {object} config - for WASM runtime creation.
-   * @param {string} wasmBaseName - (default is "vtk") base name of the wasm bundle to load. e.g., "vtk" or "addon" will
+   * @param {string} wasmBaseName - (default is `"vtk"`) base name of the wasm bundle to load. e.g., `"vtk"` or `"addon"` will
    *                             look for vtkWebAssembly.mjs or addonWebAssembly.mjs in the wasmBaseURL.
+   * @param {boolean} [urlIsGzipBundle] - (default is `true`) specifies whether the resource at `wasmBaseURL` is in Gzip format.
    */
   async load(
     wasmBaseURL,
     config = DEFAULT_CONFIG,
     wasmBaseName = "vtk",
+    urlIsGzipBundle = true,
   ) {
     if (this.#loaded) {
       return;
@@ -66,7 +68,7 @@ export class VtkWASMLoader {
 
       let wasmFile = null;
       if (!window.createVTKWASM) {
-        if (isGzipBundle(wasmBaseURL)) {
+        if (urlIsGzipBundle) {
           let gzipArrayBuffer;
           let javaScriptBlobURL = null;
           try {
