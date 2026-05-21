@@ -6,6 +6,7 @@ import { createRemoteSession } from "./core/sessionFactory";
 import { createFuture } from "./core/future";
 import { createBlobURL, disposeBlobURL } from "./core/blobURL";
 import { convertToObj, convertToStr } from "./core/stateDecorators";
+import { createInstantiatorProxy } from "./core/proxy";
 
 /**
  * VtkWASMLoader type definition
@@ -153,6 +154,18 @@ export class VtkWASMLoader {
     } else {
       await this.#pendingLoad;
     }
+  }
+
+  /**
+   * Create a vtk namespace for handling vtk object creation.
+   * This must be called after load() is complete. The returned namespace will be a proxy that creates VTK objects in the standalone session.
+   * @returns {Object} The vtk namespace for creating VTK objects.
+   */
+  createNamespace() {
+    const vtkProxyCache = new WeakMap();
+    const idToRef = new Map();
+    const wasm = this.createStandaloneSession();
+    return createInstantiatorProxy(wasm, vtkProxyCache, idToRef);
   }
 
   /**

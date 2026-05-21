@@ -1,6 +1,5 @@
-import { VtkWASMLoader } from "./wasmLoader";
+export { VtkWASMLoader } from "./wasmLoader";
 import { createFuture } from "./core/future";
-import { createInstantiatorProxy } from "./core/proxy";
 
 /**
  * Create a VTK namespace for handling vtk object creation.
@@ -21,14 +20,9 @@ export async function createNamespace(
     wasmBaseName = "vtk",
     urlIsGzipBundle = true,
 ) {
-  const vtkProxyCache = new WeakMap();
-  const idToRef = new Map();
-
   const loader = new VtkWASMLoader();
   await loader.load(url || "loaded-module", config, wasmBaseName, urlIsGzipBundle);
-  const wasm = loader.createStandaloneSession();
-
-  return createInstantiatorProxy(wasm, vtkProxyCache, idToRef);
+  return loader.createNamespace();
 }
 
 /**
@@ -41,18 +35,18 @@ export async function createNamespace(
  *  - data-config="{ rendering: 'webgl|webgpu', exec: 'sync|async' }" json config for
  *    WASM module configuration.
  */
-const { promise, resolve, reject } = createFuture();
-const script = document.querySelector("#vtk-wasm");
-if (script) {
-  const url = script.dataset.url || ".";
-  const config = JSON.parse(script.dataset.config || "{}");
-  window.vtkReady = promise;
-  createNamespace(url, config)
-    .then((vtk) => {
-      window.vtk = vtk;
-      resolve(vtk);
-    })
-    .catch(reject);
-} else {
-  reject("Automatic VTK namespace initialization is disabled because no <script id=\"vtk-wasm\"> tag was found. See https://kitware.github.io/vtk-wasm/guide/js/plain.html#defer-wasm-loading-with-annotation'");
+if (typeof window !== "undefined") {
+  const script = document.querySelector("#vtk-wasm");
+  if (script) {
+    const { promise, resolve, reject } = createFuture();
+    const url = script.dataset.url || ".";
+    const config = JSON.parse(script.dataset.config || "{}");
+    window.vtkReady = promise;
+    createNamespace(url, config)
+      .then((vtk) => {
+        window.vtk = vtk;
+        resolve(vtk);
+      })
+      .catch(reject);
+  }
 }

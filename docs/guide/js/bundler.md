@@ -4,7 +4,7 @@ Modern web development rely on package manager to bring project dependencies. Th
 
 ## Project setup
 
-In the simple example we are going to use [Vite](https://vite.dev/) with Vanilla JavaScript. The full code is available for reference [here](https://github.com/Kitware/vtk-wasm/tree/main/examples/js/simple-app).
+In the simple example we are going to use [Vite](https://vite.dev/) with Vanilla JavaScript. The full code is available for reference [here](https://github.com/Kitware/vtk-wasm/tree/main/examples/js/simple-app). Please note that you should use a concrete version, or "latest" for the `@kitware/vtk-wasm` package. Here, the example uses a relative path to the `vtk-wasm` project root, so the in-repo documentation stays relevant.
 
 ::: code-group
 <<< ../../../examples/js/simple-app/package.json
