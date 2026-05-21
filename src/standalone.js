@@ -1,5 +1,6 @@
-export { VtkWASMLoader } from "./wasmLoader";
 import { createFuture } from "./core/future";
+import { VtkWASMLoader } from "./wasmLoader";
+export { VtkWASMLoader };
 
 /**
  * Create a VTK namespace for handling vtk object creation.
