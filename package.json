@@ -49,6 +49,7 @@
     "dist/**/*"
   ],
   "exports": {
+    "./standalone": "./src/standalone.js",
     "./style.css": "./dist/esm/vtk-wasm.css",
     "./remote": "./dist/esm/remote.mjs",
     "./vtk": "./dist/esm/vtk.mjs",
