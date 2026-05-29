@@ -1,0 +1,37 @@
+name: Update news.md
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"  # every Monday at 06:00 UTC
+  workflow_dispatch:      # allow manual runs
+
+permissions:
+  contents: write
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          token: ${{ secrets.GH_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Update news.md
+        run: python scripts/update-news.py
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/news.md
+          if git diff --cached --quiet; then
+            echo "No changes to news.md"
+          else
+            git commit -m "docs: update news"
+            git push
+          fi
