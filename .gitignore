@@ -7,3 +7,4 @@ examples/cpp/vtk
 examples/cpp/*/build
 dist
 .idea
+scripts/__pycache__
