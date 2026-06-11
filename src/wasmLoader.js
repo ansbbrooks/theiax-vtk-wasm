@@ -1,7 +1,15 @@
 import { extractFilesFromGzipBundle, fetchGzipBundle } from "./core/gzipBundle";
-import { createEmscriptenConfig, normalizeConfig, validateConfig } from "./core/configManager";
+import {
+  createEmscriptenConfig,
+  normalizeConfig,
+  validateConfig,
+} from "./core/configManager";
 import { DEFAULT_CONFIG, MIME_TYPES } from "./core/constants";
-import { createScriptURL, loadWebAssemblyModuleFromExistingScript, loadWebAssemblyModuleFromScript } from "./core/scriptLoader";
+import {
+  createScriptURL,
+  loadWebAssemblyModuleFromExistingScript,
+  loadWebAssemblyModuleFromScript,
+} from "./core/scriptLoader";
 import { createRemoteSession } from "./core/sessionFactory";
 import { createFuture } from "./core/future";
 import { createBlobURL, disposeBlobURL } from "./core/blobURL";
@@ -25,6 +33,10 @@ export class VtkWASMLoader {
     this.#loaded = false;
     this.#pendingLoad = null;
     this.#wasmInstance = null;
+  }
+
+  get loaded() {
+    return this.#loaded;
   }
 
   /**
@@ -86,27 +98,38 @@ export class VtkWASMLoader {
               wasmBaseName,
             );
             wasmFile = result.wasm;
-            javaScriptBlobURL = createBlobURL(result.js.buffer, MIME_TYPES.JAVASCRIPT);
+            javaScriptBlobURL = createBlobURL(
+              result.js.buffer,
+              MIME_TYPES.JAVASCRIPT,
+            );
             await loadWebAssemblyModuleFromScript(javaScriptBlobURL);
           } catch (e) {
             reject(e);
             this.#pendingLoad = null;
             return;
-          }
-          finally {
+          } finally {
             if (javaScriptBlobURL !== null) {
               disposeBlobURL(javaScriptBlobURL);
             }
           }
         } else {
           try {
-            const scriptURL = await createScriptURL(wasmBaseURL, wasmBaseName, this.#config);
+            const scriptURL = await createScriptURL(
+              wasmBaseURL,
+              wasmBaseName,
+              this.#config,
+            );
             if (scriptURL !== null) {
               await loadWebAssemblyModuleFromScript(scriptURL);
             }
             // if window.createVTKWASM is still not defined, try legacy loader
             if (!window.createVTKWASM) {
-              const legacyScriptURL = await createScriptURL(wasmBaseURL, null, null, true);
+              const legacyScriptURL = await createScriptURL(
+                wasmBaseURL,
+                null,
+                null,
+                true,
+              );
               await loadWebAssemblyModuleFromScript(legacyScriptURL);
             }
           } catch (e) {
@@ -120,7 +143,9 @@ export class VtkWASMLoader {
       // Load WASM
       if (window.createVTKWASM) {
         try {
-          this.#wasmInstance = await window.createVTKWASM(createEmscriptenConfig(this.#config, wasmFile));
+          this.#wasmInstance = await window.createVTKWASM(
+            createEmscriptenConfig(this.#config, wasmFile),
+          );
         } catch (e) {
           reject(e);
           this.#pendingLoad = null;
@@ -177,7 +202,11 @@ export class VtkWASMLoader {
     if (!this.#loaded) {
       throw new Error("WASM module is not loaded yet. Call load() first.");
     }
-    const remoteSession = await createRemoteSession(config, this.#config, this.#wasmInstance);
+    const remoteSession = await createRemoteSession(
+      config,
+      this.#config,
+      this.#wasmInstance,
+    );
     return remoteSession;
   }
 
@@ -191,7 +220,9 @@ export class VtkWASMLoader {
       throw new Error("WASM module is not loaded yet. Call load() first.");
     }
     if (this.#wasmInstance === null) {
-      throw new Error("The currently loaded VTK.wasm version does not support standalone mode");
+      throw new Error(
+        "The currently loaded VTK.wasm version does not support standalone mode",
+      );
     }
     return new this.#wasmInstance.vtkStandaloneSession();
   }

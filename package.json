@@ -50,8 +50,8 @@
   ],
   "exports": {
     "./standalone": "./src/standalone.js",
+    "./remote": "./src/remote.js",
     "./style.css": "./dist/esm/vtk-wasm.css",
-    "./remote": "./dist/esm/remote.mjs",
     "./vtk": "./dist/esm/vtk.mjs",
     "./viewer": "./dist/esm/viewer.mjs",
     "./viewer-umd.js": "./dist/umd/viewer.umd.js",

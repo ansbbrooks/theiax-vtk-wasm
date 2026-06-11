@@ -2,7 +2,10 @@ import "./style.css";
 
 import { VtkWASMLoader } from "./wasmLoader";
 import { createVtkObjectProxy } from "./core/proxy";
-import { addCanvasEventListeners, removeCanvasEventListeners } from "./core/canvasEventListeners";
+import {
+  addCanvasEventListeners,
+  removeCanvasEventListeners,
+} from "./core/canvasEventListeners";
 
 // url => loader instance
 const WASM_LOADERS = {};
@@ -81,17 +84,12 @@ export class RemoteSession {
   /**
    * Load VTK WASM library using the base url provided
    *
-   * @param {str} wasmBaseURL
+   * @param {VtkWASMLoader} loader
+   * @param {object} config
    */
-  async load(wasmBaseURL, config, wasmBaseName) {
-    if (!WASM_LOADERS[wasmBaseURL]) {
-      WASM_LOADERS[wasmBaseURL] = new VtkWASMLoader();
-    }
-
-    await WASM_LOADERS[wasmBaseURL].load(wasmBaseURL, config, wasmBaseName);
-    this.sceneManager =
-      await WASM_LOADERS[wasmBaseURL].createRemoteSession(config);
-    this.stateDecorator = WASM_LOADERS[wasmBaseURL].createStateDecorator();
+  async load(loader, config) {
+    this.sceneManager = await loader.createRemoteSession(config);
+    this.stateDecorator = loader.createStateDecorator();
     this.loaded = true;
 
     // Ignore state properties - only in 9.5
