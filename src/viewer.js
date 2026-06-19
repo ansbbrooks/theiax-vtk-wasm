@@ -1,5 +1,11 @@
+/**
+ * `@kitware/vtk-wasm/viewer`: load a serialized VTK scene (`.vtk-wasm` export)
+ * into a remote session and display it.
+ *
+ * @module @kitware/vtk-wasm/viewer
+ */
 import JSZip from "jszip";
-import { RemoteSession } from "./remote";
+import { loadAsync } from "./runtime";
 import { createFuture } from "./core/future";
 
 export class ExportViewer {
@@ -10,7 +16,7 @@ export class ExportViewer {
     this.container = this.rootContainer.querySelector(".wasm-viewer");
   }
 
-  async load(url) {
+  async loadAsync(url) {
     // Fetch file
     const response = await fetch(url);
     if (!response.ok) {
@@ -31,7 +37,7 @@ export class ExportViewer {
     zipContent.folder("states").forEach(async (relativePath, file) => {
       progress++;
       const state = JSON.parse(await file.async("string"));
-      this.remoting.sceneManager.registerState(state);
+      this.remoting.native.registerState(state);
       progress--;
       if (progress === 0) {
         resolve();
@@ -40,7 +46,7 @@ export class ExportViewer {
     zipContent.folder("blobs").forEach(async (relativePath, file) => {
       progress++;
       const blob = await file.async("uint8array");
-      this.remoting.sceneManager.registerBlob(relativePath, blob);
+      this.remoting.native.registerBlob(relativePath, blob);
       progress--;
       if (progress === 0) {
         resolve();
@@ -49,31 +55,33 @@ export class ExportViewer {
     progress--;
 
     await promise;
-    this.remoting.sceneManager.updateObjectsFromStates();
+    this.remoting.native.updateObjectsFromStates();
 
-    // Bind canvas
-    const selector = this.remoting.bindCanvasToDOM(rwId, this.container);
-    this.container
-      .querySelector(selector)
-      .setAttribute(
-        "style",
-        "position: absolute; left: 0; top: 0; width: 100%; height: 100%;",
-      );
+    // Create the canvas, place it in the container, then let the session bind to it.
+    const canvas = document.createElement("canvas");
+    canvas.id = `vtk-wasm-${rwId}`;
+    canvas.setAttribute("tabindex", "0");
+    canvas.setAttribute(
+      "style",
+      "position: absolute; left: 0; top: 0; width: 100%; height: 100%;",
+    );
+    this.container.appendChild(canvas);
 
-    this.remoting.sceneManager.bindRenderWindow(rwId, selector);
-    this.remoting.sceneManager.startEventLoop(rwId);
+    const target = this.remoting.bindCanvas(rwId, canvas);
+    this.remoting.native.bindRenderWindow(rwId, target);
+    this.remoting.native.startEventLoop(rwId);
   }
 }
 
-export async function createViewer(
+export async function createViewerAsync(
   containerSelector,
   dataURL,
   wasmURL,
-  wasmConfig,
+  wasmConfig = {},
 ) {
-  const remoting = new RemoteSession();
-  await remoting.load(wasmURL || "loaded-module", wasmConfig);
+  const runtime = await loadAsync({ url: wasmURL || "loaded-module", ...wasmConfig });
+  const remoting = runtime.createRemoteSession();
   const viewer = new ExportViewer(containerSelector, remoting);
-  await viewer.load(dataURL);
+  await viewer.loadAsync(dataURL);
   return viewer;
 }

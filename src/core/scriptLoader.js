@@ -13,7 +13,7 @@ const PROMISES = {};
  * @param {string} wasmBaseName 
  * @returns {Promise<void>}
  */
-export function loadWebAssemblyModuleFromExistingScript(wasmBaseName) {
+export function loadWebAssemblyModuleFromExistingScriptAsync(wasmBaseName) {
   if (window.createVTKWASM) {
     return Promise.resolve();
   }
@@ -45,7 +45,7 @@ export function loadWebAssemblyModuleFromExistingScript(wasmBaseName) {
  * @param {string} url a URL to the wasm module JavaScript file
  * @return {Promise<void>} to know when the script is ready
  */
-export function loadWebAssemblyModuleFromScript(url) {
+export function loadWebAssemblyModuleFromScriptAsync(url) {
   if (PROMISES[url]) {
     return PROMISES[url];
   }
@@ -73,26 +73,18 @@ export function loadWebAssemblyModuleFromScript(url) {
 /**
  * Get the URL of the WebAssembly module JavaScript file. This is the glue
  * code that loads the WebAssembly binary. It tries to fetch the file to
- * ensure it exists. If the fetch fails, an error is thrown.
- * 
- * Set legacy to true for legacy-style wasm modules `vtkWasmSceneManager.mjs`, not `vtkWebAssembly[Async].mjs`.
- * This will resolve with null if the fetch fails for any reason.
- * 
+ * ensure it exists, and resolves with null if the fetch fails for any reason.
+ *
  * This is a fallback when not using GZIP bundles.
- * 
+ *
  * @param {string} wasmBaseURL URL where the wasm module JavaScript file is located
- * @param {string} wasmBaseName Base name of the wasm module JavaScript file 
+ * @param {string} wasmBaseName Base name of the wasm module JavaScript file
  * @param {object} config Configuration object
  * @returns {Promise<string>} URL of the wasm module JavaScript file
  */
-export async function createScriptURL(wasmBaseURL, wasmBaseName, config, legacy = false) {
-  let execModeSuffix = "";
-  if (!legacy) {
-    execModeSuffix = config?.exec === "async" ? "Async" : "";
-  }
-  const filename = legacy
-    ? `vtkWasmSceneManager${MODULE_JS_FILE_EXTENSION}`
-    : `${wasmBaseName}WebAssembly${execModeSuffix}${MODULE_JS_FILE_EXTENSION}`;
+export async function createScriptURLAsync(wasmBaseURL, wasmBaseName, config) {
+  const execModeSuffix = config?.exec === "async" ? "Async" : "";
+  const filename = `${wasmBaseName}WebAssembly${execModeSuffix}${MODULE_JS_FILE_EXTENSION}`;
   const url = `${wasmBaseURL}/${filename}`;
   const { promise, resolve, reject } = createFuture();
   fetch(url)

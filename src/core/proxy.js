@@ -2,10 +2,6 @@ import { toCxxName, toCxxKeys, toJsName, toJsKeys } from "./javaScriptCxxTransla
 
 
 export function createPropGetter(wasm, wrapMethods, vtkId) {
-  if (!wasm.get) {
-    return {};
-  }
-
   const fullState = wasm.get(vtkId);
   const getPropHandler = {};
   Object.keys(fullState).forEach((propName) => {
@@ -17,9 +13,6 @@ export function createPropGetter(wasm, wrapMethods, vtkId) {
 }
 
 function createPropSetter(wasm, wrapMethods, vtkId) {
-  if (!wasm.get) {
-    return {};
-  }
   const fullState = wasm.get(vtkId);
   const setPropHandler = {};
   Object.keys(fullState).forEach((propName) => {
@@ -44,6 +37,12 @@ export function createVtkObjectProxy(
   // Create methods
   const observerTags = [];
   function deleteObject() {
+    if (typeof wasm.destroy !== "function") {
+      console.warn(
+        "Cannot delete object: this session does not support destroying objects.",
+      );
+      return false;
+    }
     const result = wasm.destroy(vtkId);
     if (result) {
       const removedProxy = idToRef.delete(vtkId);
@@ -107,11 +106,6 @@ export function createVtkObjectProxy(
         return resolver;
       }
       if (prop === "state") {
-        if (!wasm.get) {
-          // To support old remote API
-          wasm.updateStateFromObject(vtkId);
-          return toJsKeys(wasm.getState(vtkId));
-        }
         return toJsKeys(wasm.get(vtkId));
       }
       if (prop === "delete") {
@@ -199,6 +193,12 @@ export function createInstantiatorProxy(wasm, vtkProxyCache, idToRef) {
   }
 
   function create(name, args) {
+    if (typeof wasm.create !== "function") {
+      console.warn(
+        `Cannot create '${name}': this session does not support creating objects.`,
+      );
+      return undefined;
+    }
     const vtkId = wasm.create(name);
     if (args) {
       wasm.set(vtkId, decorateKwargs(toCxxKeys(args)));

@@ -1,3 +1,45 @@
+## 9.6.20260614 is now available!
+
+__June 14, 2026__
+
+You can install the equivalent python wheel with the command
+
+```sh
+pip install "vtk==9.6.20260614.dev0" --extra-index-url https://wheels.vtk.org
+```
+
+The WASM bundle is available here:
+1. [vtk-9.6.20260614-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/7218/download)
+2. [vtk-9.6.20260614-wasm64-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/7219/download)
+
+## 9.6.20260607 is now available!
+
+__June 07, 2026__
+
+You can install the equivalent python wheel with the command
+
+```sh
+pip install "vtk==9.6.20260607.dev0" --extra-index-url https://wheels.vtk.org
+```
+
+The WASM bundle is available here:
+1. [vtk-9.6.20260607-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/7197/download)
+2. [vtk-9.6.20260607-wasm64-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/7196/download)
+
+## 9.6.20260531 is now available!
+
+__May 31, 2026__
+
+You can install the equivalent python wheel with the command
+
+```sh
+pip install "vtk==9.6.20260531.dev0" --extra-index-url https://wheels.vtk.org
+```
+
+The WASM bundle is available here:
+1. [vtk-9.6.20260531-wasm32-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/7161/download)
+2. [vtk-9.6.20260531-wasm64-emscripten.tar.gz](https://gitlab.kitware.com/vtk/vtk/-/package_files/7160/download)
+
 ## 9.6.20260524 is now available!
 
 __May 24, 2026__
