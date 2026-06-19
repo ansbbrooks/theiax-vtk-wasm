@@ -55,6 +55,8 @@
     "dist/**/*"
   ],
   "exports": {
+    "./standalone": "./src/standaloneSession.js",
+    "./remote": "./src/remoteSession.js",
     "./runtime": "./src/runtime.js",
     ".": "./dist/esm/index.mjs",
     "./style.css": "./dist/esm/vtk-wasm.css",
