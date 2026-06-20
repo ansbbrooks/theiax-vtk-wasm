@@ -462,7 +462,7 @@ export class RemoteSession {
     }
     removeCanvasEventListeners(entry.canvas);
     if (this.boundRenderWindows.has(rwId)) {
-      // this.#native.bindRenderWindow(rwId, "");
+      this.#native.bindRenderWindow(rwId, "");
       this.boundRenderWindows.delete(rwId);
     }
     const specialHTMLTargets = this.#module?.specialHTMLTargets;
