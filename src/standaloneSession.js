@@ -21,12 +21,23 @@ export class StandaloneSession {
      * The `vtk` namespace: call `vtk.vtkActor({ ... })` to create objects.
      * @type {object}
      */
-    this.vtk = createInstantiatorProxy(native, this.#vtkProxyCache, this.#idToRef);
+    this.vtk = createInstantiatorProxy(
+      native,
+      this.#vtkProxyCache,
+      this.#idToRef,
+    );
   }
 
   /** The underlying C++ session. Escape hatch; prefer {@link StandaloneSession#vtk}. */
   get native() {
     return this.#native;
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  get disposed() {
+    return this.#disposed;
   }
 
   /**
